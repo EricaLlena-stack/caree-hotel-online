@@ -7,15 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     protected $fillable = [
-        'room_type',
-        'capacity',
-        'price_per_night',
+        'room_type_id',
         'room_number',
-        'is_available',
-        'description',
-        'image',
-        'amenities',
+        'status',
         'floor',
+        'description',
     ];
 
     // Relationships
@@ -24,7 +20,9 @@ class Room extends Model
         return $this->hasMany(Booking::class, 'room_id');
     }
 
-    
-
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class, 'room_type_id');
+    }
 
 }
