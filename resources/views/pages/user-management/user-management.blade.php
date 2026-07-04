@@ -50,7 +50,7 @@
                     </button>
                 </div>
 
-                <form action="{{ route('user-management.addStaff') }}" method="POST">
+                <form action="{{ route('user-management.addStaff') }}" method="POST" data-confirm-leave>
                     @csrf
 
                     <div class="space-y-4">
@@ -272,7 +272,7 @@
 
                 {{-- Body --}}
                 <div class="px-6 py-6">
-                    <form id="editForm" method="POST" class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <form id="editForm" method="POST" class="grid grid-cols-1 gap-5 sm:grid-cols-2" data-confirm-leave>
                         @csrf
 
                         <div>
@@ -369,20 +369,20 @@
             editModal.classList.remove('flex');
         }
 
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) closeStatusModal();
-        });
+        // modal.addEventListener('click', function (e) {
+        //     if (e.target === modal) closeStatusModal();
+        // });
 
-        editModal.addEventListener('click', function (e) {
-            if (e.target === editModal) closeEditModal();
-        });
+        // editModal.addEventListener('click', function (e) {
+        //     if (e.target === editModal) closeEditModal();
+        // });
 
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                closeStatusModal();
-                closeEditModal();
-            }
-        });
+        // document.addEventListener('keydown', function (e) {
+        //     if (e.key === 'Escape') {
+        //         closeStatusModal();
+        //         closeEditModal();
+        //     }
+        // });
     </script>
 
     <script>
