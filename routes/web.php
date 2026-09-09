@@ -25,6 +25,9 @@ Route::controller(MicroPricingController::class)
         Route::post('/booking/google/store', 'storeGoogleBookingSession')->name('booking.google.store');
     });
 
+    Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy.policy');
+    Route::view('/terms-of-service', 'legal.terms-of-service')->name('terms.of.service');
+
 Route::middleware('guest')->group(function () {
 
     Route::controller(ForgotPasswordController::class)->prefix('password')->group(function () {
@@ -54,8 +57,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/signup', [AuthenticationController::class, 'showSignupForm'])->name('signup');
     Route::post('/signup', [AuthenticationController::class, 'signup'])->name('signup.post')->middleware('web');
 
-    Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy.policy');
-    Route::view('/terms-of-service', 'legal.terms-of-service')->name('terms.of.service');
+
 
 });
 
@@ -66,9 +68,11 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 
-    Route::get('/my-reservations/new-booking/rooms', [MicroPricingController::class, 'newBookingRoomOptions'])->name('reservations.booking.rooms');
-    Route::get('/my-reservations/new-booking/{roomType}', [MicroPricingController::class, 'newBookingWizard'])->name('reservations.booking.wizard');
-    Route::post('/my-reservations/new-booking', [MicroPricingController::class, 'storeAuthenticatedBooking'])->name('reservations.booking.store');
+    Route::middleware('valid.id')->group(function () {
+        Route::get('/my-reservations/new-booking/rooms', [MicroPricingController::class, 'newBookingRoomOptions'])->name('reservations.booking.rooms');
+        Route::get('/my-reservations/new-booking/{roomType}', [MicroPricingController::class, 'newBookingWizard'])->name('reservations.booking.wizard');
+        Route::post('/my-reservations/new-booking', [MicroPricingController::class, 'storeAuthenticatedBooking'])->name('reservations.booking.store');
+    });
 
 
     Route::controller(BookingController::class)
