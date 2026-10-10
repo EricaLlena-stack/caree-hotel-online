@@ -27,10 +27,17 @@ Route::controller(MicroPricingController::class)
         Route::post('/account/check', 'checkExistingAccount')->name('customize.account.check');
         Route::post('/login-with-booking', 'loginOrRegisterWithBooking')->name('customize.login.with.booking');
         Route::post('/booking/google/store', 'storeGoogleBookingSession')->name('booking.google.store');
+        
     });
 
-    Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy.policy');
-    Route::view('/terms-of-service', 'legal.terms-of-service')->name('terms.of.service');
+
+// Placed outside the 'customize' prefix
+Route::get('/booking/check-floors/{roomType}', [MicroPricingController::class, 'checkFloorAvailability'])
+    ->name('booking.check-floors');
+
+
+Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy.policy');
+Route::view('/terms-of-service', 'legal.terms-of-service')->name('terms.of.service');
 
 Route::middleware('guest')->group(function () {
 
@@ -63,9 +70,6 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/signup', [AuthenticationController::class, 'showSignupForm'])->name('signup');
     Route::post('/signup', [AuthenticationController::class, 'signup'])->name('signup.post')->middleware('web');
-
-
-
 });
 
 // Routes accessible only to authenticated users
@@ -80,6 +84,11 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::get('/my-reservations/new-booking/{roomType}', [MicroPricingController::class, 'newBookingWizard'])->name('reservations.booking.wizard');
         Route::post('/my-reservations/new-booking', [MicroPricingController::class, 'storeAuthenticatedBooking'])->name('reservations.booking.store');
     });
+
+    Route::get('/booking/new/{roomType}', [MicroPricingController::class, 'newAuthenticatedBookingWizard'])->name('booking.new.wizard');
+    Route::post('/booking/new', [MicroPricingController::class, 'storeNewBooking'])->name('booking.new.store');
+
+
 
 
     Route::controller(BookingController::class)
@@ -99,14 +108,14 @@ Route::middleware(['web', 'auth'])->group(function () {
         });
 
     Route::controller(RoomController::class)
-    ->prefix('room-management')
-    ->group(function () {
-        Route::get('/index', 'index')->name('room.index');
-        Route::post('/store', 'store')->name('room.store');
-        Route::put('/{room}', 'update')->name('room.update');
-        Route::put('/{room}/status', 'updateStatus')->name('room.updateStatus');
-        Route::delete('/{room}', 'destroy')->name('room.destroy');
-    });
+        ->prefix('room-management')
+        ->group(function () {
+            Route::get('/index', 'index')->name('room.index');
+            Route::post('/store', 'store')->name('room.store');
+            Route::put('/{room}', 'update')->name('room.update');
+            Route::put('/{room}/status', 'updateStatus')->name('room.updateStatus');
+            Route::delete('/{room}', 'destroy')->name('room.destroy');
+        });
 
     Route::controller(WalkInBookingController::class)
         ->prefix('walk-in-booking')
@@ -134,10 +143,8 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::post('/guest-management/{id}/deactivate', [GuestManagementController::class, 'deactivateStatus'])->name('guest-management.deactivate');
         Route::post('/guest-management/{id}/verify-id', [GuestManagementController::class, 'verifyValidId'])->name('guest-management.verify-id');
     });
-
 });
 
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
-

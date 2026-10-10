@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Mail\StatusEmail;
 use App\Models\Booking;
+use App\Models\Room;
 use App\Models\User;
+use App\Models\WalkInBooking;
 use App\Traits\HandlesBookingCreation;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -20,7 +22,6 @@ class MicroPricingController extends Controller
 {
     use HandlesBookingCreation;
 
-
     protected function roomCatalog(): array
     {
         return [
@@ -29,18 +30,10 @@ class MicroPricingController extends Controller
                 'price' => 1500,
                 'total_rooms' => 14,
                 'capacity' => 2,
-                'image' => 'assets/images/pRoom.png',
+                'image' => 'assets/images/sRoom.png',
                 'size' => 30,
                 'bed' => '1 King Bed',
-                'amenities' => [
-                    'Air Conditioning',
-                    'Cable TV',
-                    'Toilet',
-                    'Bathtub',
-                    'High-Speed WiFi',
-                    'Private Bathroom',
-                    'Work Desk',
-                ],
+                'amenities' => ['Air Conditioning', 'Cable TV', 'Toilet', 'Bathtub', 'High-Speed WiFi', 'Private Bathroom', 'Work Desk'],
             ],
             'standard-premium' => [
                 'name' => 'Standard Premium Room',
@@ -50,35 +43,25 @@ class MicroPricingController extends Controller
                 'image' => 'assets/images/pRoom.png',
                 'size' => 35,
                 'bed' => '1 King Bed',
-                'amenities' => [
-                    'Air Conditioning',
-                    'Cable TV',
-                    'Toilet',
-                    'Bathtub',
-                    'High-Speed WiFi',
-                    'Private Bathroom',
-                    'Work Desk',
-                ],
+                'amenities' => ['Air Conditioning', 'Cable TV', 'Toilet', 'Bathtub', 'High-Speed WiFi', 'Private Bathroom', 'Work Desk'],
             ],
             'family' => [
                 'name' => 'Family Room',
                 'price' => 2700,
                 'total_rooms' => 4,
                 'capacity' => 6,
-                'image' => 'assets/images/pRoom.png',
+                'image' => 'assets/images/fRoom.png',
                 'size' => 50,
                 'bed' => '2 Queen Beds',
-                'amenities' => [
-                    'Air Conditioning',
-                    'Cable TV',
-                    'Toilet',
-                    'Bathtub',
-                    'High-Speed WiFi',
-                    'Private Bathroom',
-                    'Dining Table',
-                ],
+                'amenities' => ['Air Conditioning', 'Cable TV', 'Toilet', 'Bathtub', 'High-Speed WiFi', 'Private Bathroom', 'Dining Table'],
             ],
         ];
+    }
+
+    protected function getRoomCapacityBySlug(string $slug): int
+    {
+        $catalog = $this->roomCatalog();
+        return $catalog[$slug]['total_rooms'] ?? 0;
     }
 
     protected function ambiancePrices(): array
@@ -103,53 +86,21 @@ class MicroPricingController extends Controller
     {
         $rooms = $this->roomCatalog();
 
-        if (! isset($rooms[$roomType])) {
+        if (!isset($rooms[$roomType])) {
             abort(404);
         }
 
         $room = (object) $rooms[$roomType];
         $roomName = $room->name;
         $price = $room->price;
-        $totalRooms = $room->total_rooms;
+        $disabledDates = $this->disabledRoomDates($roomName);
+        $floorAvailability = $this->floorAvailability($roomName);
+        $firstAvailableFloor = collect($floorAvailability)
+            ->search(fn ($availability) => $availability['available']);
+        $defaultFloor = $firstAvailableFloor === false ? '' : $firstAvailableFloor;
 
-        $bookings = Booking::where('room_type', $roomName)
-            ->whereIn('status', ['Pending', 'Confirmed'])
-            ->get();
-
-        $dateCounts = [];
-
-        foreach ($bookings as $booking) {
-            $start = Carbon::parse($booking->check_in)->startOfDay();
-            $end = Carbon::parse($booking->check_out)->startOfDay()->subDay();
-
-            if ($end->lt($start)) {
-                continue;
-            }
-
-            $period = CarbonPeriod::create($start, $end);
-
-            foreach ($period as $date) {
-                $formatted = $date->format('Y-m-d');
-                $dateCounts[$formatted] = ($dateCounts[$formatted] ?? 0) + 1;
-            }
-        }
-
-        $disabledDates = [];
-        foreach ($dateCounts as $date => $count) {
-            if ($count >= $totalRooms) {
-                $disabledDates[] = $date;
-            }
-        }
-
-        return view('micro-pricing', compact(
-            'room',
-            'roomName',
-            'roomType',
-            'price',
-            'disabledDates'
-        ));
+        return view('micro-pricing', compact('room', 'roomName', 'roomType', 'price', 'disabledDates', 'floorAvailability', 'defaultFloor'));
     }
-
 
     public function checkExistingAccount(Request $request)
     {
@@ -162,8 +113,7 @@ class MicroPricingController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if ($request->boolean('use_existing_account')) {
-
-            if (! $user || ! Hash::check($data['password'], $user->password)) {
+            if (!$user || !Hash::check($data['password'], $user->password)) {
                 throw ValidationException::withMessages([
                     'email' => ['We could not find an account with those credentials.'],
                 ]);
@@ -172,10 +122,9 @@ class MicroPricingController extends Controller
             return response()->json([
                 'mode' => 'existing',
                 'requires_id_upload' => empty($user->valid_id),
-                'has_valid_id' => ! empty($user->valid_id),
+                'has_valid_id' => !empty($user->valid_id),
             ]);
         }
-
 
         if ($user) {
             throw ValidationException::withMessages([
@@ -191,16 +140,16 @@ class MicroPricingController extends Controller
 
     public function loginOrRegisterWithBooking(Request $request)
     {
-        $request->validate(array_merge($this->bookingFieldRules(), [
-            'room_type_slug' => ['required', 'string'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:8'],
-            'use_existing_account' => ['required', 'boolean'],
-        ]));
-
-        $validated = $this->validateBookingFields(
-            $request->only($this->bookingDataKeys())
+        $request->validate(
+            array_merge($this->bookingFieldRules(), [
+                'room_type_slug' => ['required', 'string'],
+                'email' => ['required', 'email'],
+                'password' => ['required', 'string', 'min:8'],
+                'use_existing_account' => ['required', 'boolean'],
+            ]),
         );
+
+        $validated = $this->validateBookingFields($request->only($this->bookingDataKeys()));
 
         $validated = $this->repriceBooking($validated, $request->input('room_type_slug'));
 
@@ -208,7 +157,7 @@ class MicroPricingController extends Controller
         $existingUser = User::where('email', $request->email)->first();
 
         if ($useExistingAccount) {
-            if (! $existingUser || ! Hash::check($request->password, $existingUser->password)) {
+            if (!$existingUser || !Hash::check($request->password, $existingUser->password)) {
                 throw ValidationException::withMessages([
                     'email' => ['We could not find an account with those credentials.'],
                 ]);
@@ -222,6 +171,8 @@ class MicroPricingController extends Controller
         DB::beginTransaction();
 
         try {
+            $this->ensureRoomAvailability($validated, $request->input('room_type_slug'));
+
             if ($useExistingAccount) {
                 $user = $existingUser;
 
@@ -232,16 +183,16 @@ class MicroPricingController extends Controller
                 Auth::login($user, $request->boolean('remember'));
             } else {
                 $user = User::create([
-                    'name'           => $request->filled('name') ? $request->name : $this->buildAutoName($request->email),
-                    'email'          => $request->email,
-                    'password'       => Hash::make($request->password),
+                    'name' => $request->filled('name') ? $request->name : $this->buildAutoName($request->email),
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
                     'is_google_user' => false,
                 ]);
                 $user->assignRole('client');
                 Auth::login($user, $request->boolean('remember'));
             }
 
-            if (empty($user->valid_id) && ! $request->hasFile('valid_id_path')) {
+            if (empty($user->valid_id) && !$request->hasFile('valid_id_path')) {
                 throw ValidationException::withMessages([
                     'valid_id_path' => ['Please upload a valid ID to continue.'],
                 ]);
@@ -250,17 +201,17 @@ class MicroPricingController extends Controller
             $booking = $this->persistBooking($validated, $user->id, $request->file('valid_id_path'), $user);
 
             DB::commit();
-
         } catch (ValidationException $e) {
             DB::rollBack();
             throw $e;
-
         } catch (\Throwable $e) {
             DB::rollBack();
 
             report($e);
 
-            return back()->withInput()->withErrors(['general' => 'Something went wrong while processing your booking. Please try again.',]);
+            return back()
+                ->withInput()
+                ->withErrors(['general' => 'Something went wrong while processing your booking. Please try again.']);
         }
 
         try {
@@ -276,19 +227,18 @@ class MicroPricingController extends Controller
 
     public function storeGoogleBookingSession(Request $request)
     {
-        $request->validate(array_merge($this->bookingFieldRules(), [
-            'room_type_slug' => ['required', 'string'],
-        ]));
-
-        $validated = $this->validateBookingFields(
-            $request->only($this->bookingDataKeys())
+        $request->validate(
+            array_merge($this->bookingFieldRules(), [
+                'room_type_slug' => ['required', 'string'],
+            ]),
         );
+
+        $validated = $this->validateBookingFields($request->only($this->bookingDataKeys()));
 
         $validated = $this->repriceBooking($validated, $request->input('room_type_slug'));
 
         if ($request->hasFile('valid_id_path')) {
-            $validated['valid_id_temp_path'] = $request->file('valid_id_path')
-                ->store('valid-ids/temp', 'public');
+            $validated['valid_id_temp_path'] = $request->file('valid_id_path')->store('valid-ids/temp', 'public');
         }
 
         session(['pending_google_booking' => $validated]);
@@ -299,7 +249,7 @@ class MicroPricingController extends Controller
     {
         $room = $this->roomCatalog()[$roomTypeSlug] ?? null;
 
-        if (! $room) {
+        if (!$room) {
             throw ValidationException::withMessages([
                 'room_type' => ['Selected room is no longer available.'],
             ]);
@@ -330,15 +280,17 @@ class MicroPricingController extends Controller
 
     public function newBookingRoomOptions()
     {
-        $rooms = collect($this->roomCatalog())->map(function ($room, $slug) {
-            return [
-                'slug'     => $slug,
-                'name'     => $room['name'],
-                'price'    => $room['price'],
-                'capacity' => $room['capacity'],
-                'image'    => asset($room['image']),
-            ];
-        })->values();
+        $rooms = collect($this->roomCatalog())
+            ->map(function ($room, $slug) {
+                return [
+                    'slug' => $slug,
+                    'name' => $room['name'],
+                    'price' => $room['price'],
+                    'capacity' => $room['capacity'],
+                    'image' => asset($room['image']),
+                ];
+            })
+            ->values();
 
         return response()->json(['rooms' => $rooms]);
     }
@@ -349,107 +301,467 @@ class MicroPricingController extends Controller
 
         $rooms = $this->roomCatalog();
 
-        if (! isset($rooms[$roomType])) {
+        if (!isset($rooms[$roomType])) {
             abort(404);
         }
 
-        $room       = (object) $rooms[$roomType];
-        $roomName   = $room->name;
-        $price      = $room->price;
-        $totalRooms = $room->total_rooms;
-
-        $bookings = Booking::where('room_type', $roomName)
-            ->whereIn('status', ['pending', 'confirmed'])
-            ->get();
-
-        $dateCounts = [];
-
-        foreach ($bookings as $booking) {
-            $start = Carbon::parse($booking->check_in)->startOfDay();
-            $end = Carbon::parse($booking->check_out)->startOfDay()->subDay();
-
-            if ($end->lt($start)) {
-                continue;
-            }
-
-            foreach (CarbonPeriod::create($start, $end) as $date) {
-                $formatted = $date->format('Y-m-d');
-                $dateCounts[$formatted] = ($dateCounts[$formatted] ?? 0) + 1;
-            }
-        }
-
-        $disabledDates = [];
-        foreach ($dateCounts as $date => $count) {
-            if ($count >= $totalRooms) {
-                $disabledDates[] = $date;
-            }
-        }
+        $room = (object) $rooms[$roomType];
+        $roomName = $room->name;
+        $price = $room->price;
+        $disabledDates = $this->disabledRoomDates($roomName);
+        $floorAvailability = $this->floorAvailability($roomName);
+        $firstAvailableFloor = collect($floorAvailability)
+            ->search(fn ($availability) => $availability['available']);
+        $defaultFloor = $firstAvailableFloor === false ? '' : $firstAvailableFloor;
 
         $user = Auth::user();
-        $hasValidId = ! empty($user->valid_id);
+        $hasValidId = !empty($user->valid_id);
 
         return view('components.common.booking-wizard-authenticated', compact(
-            'room', 'roomName', 'roomType', 'price', 'disabledDates', 'hasValidId'
+            'room',
+            'roomName',
+            'roomType',
+            'price',
+            'disabledDates',
+            'floorAvailability',
+            'defaultFloor',
+            'hasValidId'
         ));
     }
 
     public function storeAuthenticatedBooking(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Your session has expired. Please log in again.',
+                ],
+                401,
+            );
+        }
+
+        $catalog = $this->roomCatalog();
+        $request->validate([
+            'room_type_slug' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys($catalog))],
+        ]);
+        $room = $catalog[$request->input('room_type_slug')];
+
+        $request->validate(
+            array_merge($this->bookingFieldRules(), [
+                'room_type_slug' => ['required', 'string'],
+                'number_of_guests' => ['required', 'integer', 'min:1', 'max:' . $room['capacity']],
+                'floor_level' => ['required', 'string', 'in:Floor 1,Floor 2,Floor 4'],
+                'ambiance' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys($this->ambiancePrices()))],
+                'food_package' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys($this->foodPrices()))],
+            ]),
+        );
+
+        $validated = $this->validateBookingFields($request->only($this->bookingDataKeys()));
+
+        $validated['nights'] = Carbon::parse($validated['check_in'])
+            ->startOfDay()
+            ->diffInDays(Carbon::parse($validated['check_out'])->startOfDay());
+
+        $validated = $this->repriceBooking($validated, $request->input('room_type_slug'));
+
+        DB::beginTransaction();
+
+        try {
+            $this->ensureRoomAvailability($validated, $request->input('room_type_slug'));
+
+            $booking = $this->persistBooking($validated, $user->id, $request->file('valid_id_path'), $user);
+
+            DB::commit();
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            throw $e;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            report($e);
+
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Something went wrong while processing your booking. Please try again.',
+                ],
+                500,
+            );
+        }
+
+        $emailSent = false;
+
+        try {
+            Mail::to($booking->user->email)->send(new StatusEmail($booking));
+            $emailSent = true;
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking submitted! We will verify your ID and confirm shortly.',
+            'redirect' => route('dashboard', ['referenceNumber' => $booking->reference_number]),
+            'email_sent' => $emailSent,
+        ]);
+    }
+
+    public function newAuthenticatedBookingWizard(Request $request, $roomType)
+    {
+        abort_unless(auth()->check(), 403);
+
+        $user = auth()->user();
+
+        $catalog = $this->roomCatalog();
+
+        if (!isset($catalog[$roomType])) {
+            abort(404);
+        }
+
+        $room = (object) $catalog[$roomType];
+
+        $roomName = $room->name;
+        $price = $room->price;
+
+        $disabledDates = $this->disabledRoomDates($roomName);
+        $floorAvailability = $this->floorAvailability($roomName);
+        $firstAvailableFloor = collect($floorAvailability)
+            ->search(fn ($availability) => $availability['available']);
+        $defaultFloor = $firstAvailableFloor === false ? '' : $firstAvailableFloor;
+
+        return view('booking.new-wizard', compact('user', 'room', 'roomType', 'roomName', 'price', 'disabledDates', 'floorAvailability', 'defaultFloor'));
+    }
+
+    public function storeNewBooking(Request $request)
+    {
+        $user = auth()->user();
+
+        abort_unless($user, 403);
+
+        $request->validate(
+            array_merge($this->bookingFieldRules(), [
+                'room_type_slug' => ['required', 'string'],
+            ]),
+        );
+
+        $validated = $this->validateBookingFields($request->only($this->bookingDataKeys()));
+
+        $validated = $this->repriceBooking($validated, $request->input('room_type_slug'));
+
+        DB::beginTransaction();
+
+        try {
+            $this->ensureRoomAvailability($validated, $request->input('room_type_slug'));
+
+            $booking = $this->persistBooking($validated, $user->id, $request->file('valid_id_path'), $user);
+
+            DB::commit();
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            throw $e;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            report($e);
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'general' => 'Something went wrong while processing your booking. Please try again.',
+                ]);
+        }
+
+        try {
+            Mail::to($booking->user->email)->send(new StatusEmail($booking));
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        return redirect()
+            ->route('dashboard', [
+                'referenceNumber' => $booking->reference_number,
+            ])
+            ->with('success', 'Booking submitted! We will verify your ID and confirm shortly.');
+    }
+
+    protected function roomInventoryCount(string $roomName, ?string $floorLevel = null, bool $lock = false): int
+    {
+        $catalogRoom = collect($this->roomCatalog())->firstWhere('name', $roomName);
+        $totalCatalogCapacity = $catalogRoom['total_rooms'] ?? 0;
+
+        $inventory = Room::where('room_type', $roomName);
+        $hasPhysicalInventory = (clone $inventory)->exists();
+        $query = (clone $inventory)->whereNotIn(DB::raw('LOWER(status)'), ['maintenance', 'out of order', 'reserved']);
+
+        if ($floorLevel) {
+            $floorNumber = $this->floorNumber($floorLevel);
+            if ($floorNumber === null) {
+                return 0;
+            }
+
+            $query->where('floor', $floorNumber);
+        }
+
+        if ($lock) {
+            $inventoryCount = $query
+                ->lockForUpdate()
+                ->get(['id'])
+                ->count();
+        } else {
+            $inventoryCount = $query->count();
+        }
+
+        if ($hasPhysicalInventory) {
+            return $inventoryCount;
+        }
+
+        return $floorLevel ? 0 : $totalCatalogCapacity;
+    }
+
+    protected function roomOccupancyByDate(string $roomName, ?Carbon $rangeStart = null, ?Carbon $rangeEnd = null, ?string $floorLevel = null): array
 {
-    $user = Auth::user();
+    $rangeStart = $rangeStart ? $rangeStart->copy()->startOfDay() : Carbon::today();
+    $rangeEnd = $rangeEnd ? $rangeEnd->copy()->startOfDay() : null;
+    $floorNumber = $floorLevel ? $this->floorNumber($floorLevel) : null;
 
-    if (! $user) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Your session has expired. Please log in again.',
-        ], 401);
+    if ($floorLevel && $floorNumber === null) {
+        return [];
     }
 
-    $request->validate(array_merge($this->bookingFieldRules(), [
-        'room_type_slug' => ['required', 'string'],
-    ]));
+    $dateCounts = [];
 
-    $validated = $this->validateBookingFields(
-        $request->only($this->bookingDataKeys())
-    );
+    $addStay = function ($checkIn, $checkOut) use (&$dateCounts, $rangeStart, $rangeEnd) {
+        $start = Carbon::parse($checkIn)->startOfDay();
+        $end = Carbon::parse($checkOut)->startOfDay()->subDay();
 
-    $validated = $this->repriceBooking($validated, $request->input('room_type_slug'));
+        if ($start->lt($rangeStart)) {
+            $start = $rangeStart->copy();
+        }
 
-    DB::beginTransaction();
+        if ($rangeEnd && $end->gte($rangeEnd)) {
+            $end = $rangeEnd->copy()->subDay();
+        }
 
-    try {
-        $booking = $this->persistBooking($validated, $user->id, $request->file('valid_id_path'), $user);
+        if ($end->lt($start)) {
+            return;
+        }
 
-        DB::commit();
+        foreach (CarbonPeriod::create($start, $end) as $date) {
+            $formatted = $date->format('Y-m-d');
+            $dateCounts[$formatted] = ($dateCounts[$formatted] ?? 0) + 1;
+        }
+    };
 
-    } catch (ValidationException $e) {
-        DB::rollBack();
-        throw $e;
+    $bookings = Booking::where('room_type', $roomName)
+        ->whereIn(DB::raw('LOWER(status)'), [
+            'pending',
+            'confirmed',
+            'checked in',
+            'checked-in'
+        ])
+        ->when($floorLevel, function ($query) use ($floorLevel, $floorNumber, $roomName) {
+            $query->where(function ($query) use ($floorLevel, $floorNumber, $roomName) {
+                $query->whereHas('room', function ($roomQuery) use ($floorNumber, $roomName) {
+                    $roomQuery->where('room_type', $roomName)
+                        ->where('floor', $floorNumber);
+                })->orWhere(function ($unassignedQuery) use ($floorLevel, $roomName) {
+                    $unassignedQuery->whereNull('room_id')
+                        ->where('room_type', $roomName)
+                        ->where('floor_level', $floorLevel);
+                });
+            });
+        })
+        ->whereDate('check_in', '<', $rangeEnd ? $rangeEnd->format('Y-m-d') : '9999-12-31')
+        ->whereDate('check_out', '>', $rangeStart->format('Y-m-d'))
+        ->get(['check_in', 'check_out']);
 
-    } catch (\Throwable $e) {
-        DB::rollBack();
-
-        report($e);
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Something went wrong while processing your booking. Please try again.',
-        ], 500);
+    foreach ($bookings as $booking) {
+        $addStay($booking->check_in, $booking->check_out);
     }
 
-    $emailSent = false;
+    $walkIns = WalkInBooking::whereIn(DB::raw('LOWER(status)'), [
+        'confirmed',
+        'checked in',
+        'checked-in'
+    ])
+        ->whereHas('room', function ($query) use ($roomName, $floorLevel, $floorNumber) {
+            $query->where('room_type', $roomName);
 
-    try {
-        Mail::to($booking->user->email)->send(new StatusEmail($booking));
-        $emailSent = true;
-    } catch (\Throwable $e) {
-        report($e);
+            if ($floorLevel) {
+                $query->where('floor', $floorNumber);
+            }
+        })
+        ->whereDate('check_in', '<', $rangeEnd ? $rangeEnd->format('Y-m-d') : '9999-12-31')
+        ->whereDate('check_out', '>', $rangeStart->format('Y-m-d'))
+        ->get(['check_in', 'check_out']);
+
+    foreach ($walkIns as $walkIn) {
+        $addStay($walkIn->check_in, $walkIn->check_out);
     }
 
-    return response()->json([
-        'success'    => true,
-        'message'    => 'Booking submitted! We will verify your ID and confirm shortly.',
-        'redirect'   => route('dashboard', ['referenceNumber' => $booking->reference_number]),
-        'email_sent' => $emailSent,
-    ]);
+    return $dateCounts;
 }
+
+    protected function disabledRoomDates(string $roomName, ?string $floorLevel = null): array
+    {
+        $roomCapacity = $this->roomInventoryCount($roomName, $floorLevel);
+        if ($roomCapacity === 0) {
+            return [];
+        }
+
+        // Look ahead up to 1 year from today for disabled calendar dates
+        $startDate = Carbon::today();
+        $endDate = Carbon::today()->addYear();
+
+        $disabledDates = [];
+        $occupancy = $this->roomOccupancyByDate($roomName, $startDate, $endDate, $floorLevel);
+
+        foreach ($occupancy as $date => $occupiedCount) {
+            if ($occupiedCount >= $roomCapacity) {
+                $disabledDates[] = $date;
+            }
+        }
+
+        return array_values(array_unique($disabledDates));
+    }
+
+    protected function ensureRoomAvailability(array $validated, string $roomTypeSlug): void
+    {
+        $room = $this->roomCatalog()[$roomTypeSlug] ?? null;
+        if (!$room) {
+            throw ValidationException::withMessages([
+                'room_type' => ['Selected room type is no longer available.'],
+            ]);
+        }
+
+        $checkIn = Carbon::parse($validated['check_in'])->startOfDay();
+        $checkOut = Carbon::parse($validated['check_out'])->startOfDay();
+        $floorLevel = $validated['floor_level'] ?? null;
+
+        $roomCapacity = $this->roomInventoryCount($room['name'], $floorLevel, true);
+        $dateCounts = $this->roomOccupancyByDate($room['name'], $checkIn, $checkOut, $floorLevel);
+
+        foreach (CarbonPeriod::create($checkIn, $checkOut->copy()->subDay()) as $date) {
+            $formattedDate = $date->format('Y-m-d');
+            $occupied = $dateCounts[$formattedDate] ?? 0;
+
+            if ($roomCapacity === 0 || $occupied >= $roomCapacity) {
+                throw ValidationException::withMessages([
+                    'check_in' => ["The {$room['name']} is fully booked for date {$formattedDate}" . ($floorLevel ? " on {$floorLevel}." : '.')],
+                ]);
+            }
+        }
+    }
+
+    protected function floorNumber(string $floorLevel): ?int
+    {
+        if (preg_match('/^(?:Floor\s*)?([1-9]\d*)$/i', trim($floorLevel), $matches) !== 1) {
+            return null;
+        }
+
+        return (int) $matches[1];
+    }
+
+    protected function floorAvailability(string $roomName, ?string $checkIn = null, ?string $checkOut = null): array
+    {
+        $availability = [];
+
+        foreach (['Floor 1', 'Floor 2', 'Floor 4'] as $floor) {
+            $capacity = $this->roomInventoryCount($roomName, $floor);
+            $fullyBooked = false;
+
+            if ($capacity > 0 && $checkIn && $checkOut) {
+                $occupancy = $this->roomOccupancyByDate(
+                    $roomName,
+                    Carbon::parse($checkIn),
+                    Carbon::parse($checkOut),
+                    $floor
+                );
+
+                foreach ($occupancy as $count) {
+                    if ($count >= $capacity) {
+                        $fullyBooked = true;
+                        break;
+                    }
+                }
+            }
+
+            $availability[$floor] = [
+                'capacity' => $capacity,
+                'unavailable' => $capacity === 0,
+                'fully_booked' => $fullyBooked,
+                'available' => $capacity > 0 && !$fullyBooked,
+            ];
+        }
+
+        return $availability;
+    }
+
+    public function checkFloorAvailability(Request $request, $roomType)
+    {
+        $rooms = $this->roomCatalog();
+        abort_unless(isset($rooms[$roomType]), 404);
+
+        $dates = $request->validate([
+            'check_in' => ['required', 'date'],
+            'check_out' => ['required', 'date', 'after:check_in'],
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'check_in' => $dates['check_in'],
+            'check_out' => $dates['check_out'],
+            'floors' => $this->floorAvailability(
+                $rooms[$roomType]['name'],
+                $dates['check_in'],
+                $dates['check_out']
+            ),
+        ]);
+    }
+
+//    public function checkFloorAvailability(Request $request, $roomType)
+// {
+//     $checkIn = $request->query('check_in');
+//     $checkOut = $request->query('check_out');
+
+//     $floors = ['Floor 1', 'Floor 2', 'Floor 4'];
+//     $availability = [];
+
+//     foreach ($floors as $floor) {
+//         // 1. Get total active rooms on this floor for this room type
+//         $totalRooms = Room::where('room_type', $roomType)
+//             ->where('floor', $floor)
+//             ->whereNotIn('status', ['Maintenance', 'Out of Order'])
+//             ->count();
+
+//         // 2. Count occupied rooms during the requested dates
+//         // 2. Count occupied rooms during the requested dates
+//         $bookedRooms = Room::where('room_type', $roomType)
+//             ->where('floor_level', $floor)
+//             ->whereHas('bookings', function ($q) use ($checkIn, $checkOut) {
+//                 // FIXED: Changed $q::where to $q->where
+//                 $q->where('status', '!=', 'Cancelled')
+//                 ->where('check_in', '<', $checkOut)
+//                 ->where('check_out', '>', $checkIn);
+//             })
+//             ->count();
+
+
+//         // 3. Mark as fully booked if total rooms > 0 and available rooms <= 0
+//         $isFullyBooked = ($totalRooms > 0) && ($bookedRooms >= $totalRooms);
+
+//         $availability[$floor] = [
+//             'capacity' => $totalRooms,
+//             'fully_booked' => $isFullyBooked,
+//         ];
+//     }
+
+//     return response()->json([
+//         'floors' => $availability
+//     ]);
+// }
+
 }

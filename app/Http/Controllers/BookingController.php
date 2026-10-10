@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\WalkInBooking;
-// use App\Models\User;
 use Carbon\Carbon;
 use App\Models\Room;
 use Illuminate\Support\Facades\Mail;
@@ -48,51 +47,46 @@ class BookingController extends Controller
         return view('pages.chms-features.my-reservations.reservation', compact('pendingBookings', 'confirmedBookings'));
     }
 
-  public function pending(Request $request)
-{
-    // 1. Fetch Online Bookings with dynamic type property
-    $onlineBookings = Booking::with('user.idVerification')
-        ->whereIn('status', ['Pending', 'Confirmed', 'Checked In'])
-        ->get()
-        ->map(function ($booking) {
-            $booking->booking_type = 'Online';
+
+    public function pending(Request $request)
+    {
+        $onlineBookings = Booking::with('user.idVerification')
+            ->whereIn('status', ['Pending', 'Confirmed', 'Checked In'])
+            ->get()->map(function ($booking) {
+                $booking->booking_type = 'Online';
+                return $booking;
+            });
+
+        $walkInBookings = WalkInBooking::whereIn('status', ['Pending', 'Confirmed', 'Checked In'])
+            ->get()
+            ->map(function ($booking) {
+                $booking->booking_type = 'Walk-in';
+                return $booking;
+            });
+
+        $items = $onlineBookings->concat($walkInBookings)->map(function ($booking) {
+            $booking->sort_date = in_array($booking->status, ['Confirmed', 'Checked In'])
+                ? $booking->updated_at
+                : $booking->created_at;
+
             return $booking;
-        });
+        })->sortByDesc('sort_date')->values();
 
-    // 2. Fetch Walk-In Bookings with dynamic type property
-    $walkInBookings = WalkInBooking::whereIn('status', ['Pending', 'Confirmed', 'Checked In'])
-        ->get()
-        ->map(function ($booking) {
-            $booking->booking_type = 'Walk-in';
-            return $booking;
-        });
 
-    // 3. Merge and sort by check_in descending
-    $items = $onlineBookings
-        ->concat($walkInBookings)
-        ->sortByDesc('check_in')
-        ->values();
+        $perPage = 15;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
-    // 4. Manual Pagination
-    $perPage = 15;
-    $currentPage = LengthAwarePaginator::resolveCurrentPage();
-    $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $bookings = new LengthAwarePaginator($currentItems, $items->count(), $perPage, $currentPage, [
+            'path' => $request->url(),
+            'query' => $request->query(),
+        ]);
 
-    $bookings = new LengthAwarePaginator($currentItems, $items->count(), $perPage, $currentPage, [
-        'path' => $request->url(),
-        'query' => $request->query(),
-    ]);
+        $availableRooms = Room::where('status', 'Available')->orderBy('room_type')->orderBy('floor')->orderBy('room_no')->get();
 
-    // 5. Fetch available rooms
-    $availableRooms = Room::where('status', 'Available')
-        ->orderBy('room_type')
-        ->orderBy('floor')
-        ->orderBy('room_no')
-        ->get();
+        return view('pages.chms-features.booking-management.pending-booking', compact('bookings', 'availableRooms'));
+    }
 
-    return view('pages.chms-features.booking-management.pending-booking', compact('bookings', 'availableRooms'));
-}
-  
     public function confirmBooking(Request $request, $selectedRef)
     {
         $request->validate([
@@ -100,12 +94,14 @@ class BookingController extends Controller
         ]);
 
         $booking = Booking::where('reference_number', $selectedRef)->firstOrFail();
+
         $room = Room::whereKey($request->input('room_id'))
             ->where('status', 'Available')
             ->where('room_type', $booking->room_type)
             ->firstOrFail();
 
-        $requestedFloor = trim((string) $booking->floor_level);
+        $requestedFloor = trim(str_replace('Floor ', '', (string) $booking->floor_level));
+
         $hasRequestedFloorRoom = $requestedFloor !== '' && Room::where('status', 'Available')
             ->where('room_type', $booking->room_type)
             ->where('floor', $requestedFloor)
@@ -117,14 +113,19 @@ class BookingController extends Controller
             ])->withInput();
         }
 
-        // Update the booking status to confirmed and assign the selected room
         $booking->status = 'Confirmed';
         $booking->room_id = $request->input('room_id');
         $booking->save();
 
-        // Update the room status to occupied
         $room->status = 'Occupied';
         $room->save();
+
+        // dd('Everything before email works', [
+        //     'booking' => $booking->id,
+        //     'room' => $room->id,
+        //     'user' => $booking->user,
+        //     'email' => $booking->user?->email,
+        // ]);
 
         Mail::to($booking->user->email)->send(new StatusEmail($booking));
 
@@ -153,7 +154,6 @@ class BookingController extends Controller
 
     public function checkedInBookings(Request $request)
     {
-        // 1. Fetch Online Bookings with a dynamic type property
         $onlineBookings = Booking::where('status', 'Checked In')
             ->get()
             ->map(function ($booking) {
@@ -161,7 +161,6 @@ class BookingController extends Controller
                 return $booking;
             });
 
-        // 2. Fetch Walk-In Bookings with a dynamic type property
         $walkInBookings = WalkInBooking::where('status', 'Checked In')
             ->get()
             ->map(function ($booking) {
@@ -174,7 +173,6 @@ class BookingController extends Controller
             ->sortByDesc('created_at')
             ->values();
 
-        // 4. Manual Pagination to match your exact pattern
         $perPage = 15;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->values();
@@ -188,27 +186,27 @@ class BookingController extends Controller
     }
 
     public function earlyCheckout(Request $request, $selectedRef)
-{
-    // Search Online bookings first; fall back to Walk-in if not found
-    $booking = Booking::where('reference_number', $selectedRef)->first()
-        ?? WalkInBooking::where('reference_number', $selectedRef)->firstOrFail();
+    {
+        // Search Online bookings first; fall back to Walk-in if not found
+        $booking = Booking::where('reference_number', $selectedRef)->first()
+            ?? WalkInBooking::where('reference_number', $selectedRef)->firstOrFail();
 
-    // Update booking status
-    $booking->status = 'Completed';
-    $booking->save();
+        // Update booking status
+        $booking->status = 'Completed';
+        $booking->save();
 
-    // Update assigned room status to available
-    if ($booking->room_id) {
-        $room = Room::find($booking->room_id);
+        // Update assigned room status to available
+        if ($booking->room_id) {
+            $room = Room::find($booking->room_id);
 
-        if ($room) {
-            $room->status = 'Available';
-            $room->save();
+            if ($room) {
+                $room->status = 'Available';
+                $room->save();
+            }
         }
-    }
 
-    return redirect()->route('booking.history')->with('success', 'Booking completed successfully.');
-}
+        return redirect()->route('booking.history')->with('success', 'Booking completed successfully.');
+    }
 
 
     public function bookingHistory()
@@ -217,7 +215,6 @@ class BookingController extends Controller
 
         if (auth()->user()->hasRole('staff')) {
 
-            // 1. Fetch Online Bookings
             $onlineBookings = Booking::with('user')
                 ->whereIn('status', $statuses)
                 ->get()
@@ -226,7 +223,6 @@ class BookingController extends Controller
                     return $booking;
                 });
 
-            // 2. Fetch Walk-In Bookings
             $walkInBookings = WalkInBooking::whereIn('status', $statuses)
                 ->get()
                 ->map(function ($booking) {
@@ -234,13 +230,11 @@ class BookingController extends Controller
                     return $booking;
                 });
 
-            // 3. Concat and Sort Collections
             $items = $onlineBookings
                 ->concat($walkInBookings)
                 ->sortByDesc('created_at')
                 ->values();
 
-            // 4. Manual Pagination Construction
             $perPage = 15;
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->values();

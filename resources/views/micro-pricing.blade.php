@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full scroll-smooth">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,9 +9,12 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hotel-datepicker@4.12.2/dist/css/hotel-datepicker.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/hotel-datepicker@4.12.2/dist/css/hotel-datepicker.min.css">
     <link rel="shortcut icon" href="{{ asset('assets/images/chlogo.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -19,16 +23,21 @@
             theme: {
                 extend: {
                     colors: {
-                        gold:     { DEFAULT: '#FFD000', light: '#FFE566', dark: '#B89200', faint: '#FFFAE6' },
-                        cream:    '#FFFDF0',
+                        gold: {
+                            DEFAULT: '#FFD000',
+                            light: '#FFE566',
+                            dark: '#B89200',
+                            faint: '#FFFAE6'
+                        },
+                        cream: '#FFFDF0',
                         charcoal: '#1C1C1E',
-                        warm:     '#3D3530',
-                        muted:    '#7A6E68',
-                        panel:    '#FFF8D6',
+                        warm: '#3D3530',
+                        muted: '#7A6E68',
+                        panel: '#FFF8D6',
                     },
                     fontFamily: {
                         display: ['Fraunces', 'serif'],
-                        body:    ['DM Sans', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
                     }
                 }
             }
@@ -38,31 +47,100 @@
     @include('components.devtools-protection')
 
     <style>
-        * { font-family: 'DM Sans', sans-serif; }
-        h1, h2, h3 { font-family: 'Fraunces', serif; }
-        .option-row { cursor: pointer; transition: background 0.18s ease, border-color 0.18s ease; }
-        .option-row.selected { background: #FFF3A3; border-color: #D4A800 !important; }
-        .option-row:not(.selected):hover { background: #FFFAE6; }
-        .option-row .dot { opacity: 0; transition: opacity 0.18s ease; }
-        .option-row.selected .dot { opacity: 1; background: #D4A800; }
-        .price-bump { transition: transform 0.2s ease; }
-        .price-bump.bump { transform: scale(1.15); }
-        .room-img-wrap:hover img { transform: scale(1.04); }
-        .room-img-wrap img { transition: transform 0.5s ease; }
-        .section-label { display: flex; align-items: center; gap: 10px; }
-        .section-label::after { content: ''; flex: 1; height: 1px; background: #FFE566; }
-        input:focus, select:focus, textarea:focus {
+        * {
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Fraunces', serif;
+        }
+
+        .option-row {
+            cursor: pointer;
+            transition: background 0.18s ease, border-color 0.18s ease;
+        }
+
+        .option-row.selected {
+            background: #FFF3A3;
+            border-color: #D4A800 !important;
+        }
+
+        .option-row:not(.selected):hover {
+            background: #FFFAE6;
+        }
+
+        .option-row .dot {
+            opacity: 0;
+            transition: opacity 0.18s ease;
+        }
+
+        .option-row.selected .dot {
+            opacity: 1;
+            background: #D4A800;
+        }
+
+        .price-bump {
+            transition: transform 0.2s ease;
+        }
+
+        .price-bump.bump {
+            transform: scale(1.15);
+        }
+
+        .room-img-wrap:hover img {
+            transform: scale(1.04);
+        }
+
+        .room-img-wrap img {
+            transition: transform 0.5s ease;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #FFE566;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: #FFD000 !important;
-            box-shadow: 0 0 0 3px rgba(255,208,0,0.18);
+            box-shadow: 0 0 0 3px rgba(255, 208, 0, 0.18);
         }
-        .sticky-bar { box-shadow: 0 -8px 32px rgba(0,0,0,0.08); }
+
+        .sticky-bar {
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08);
+        }
+
         @keyframes fadeUp {
-            from { opacity:0; transform:translateY(18px); }
-            to { opacity:1; transform:translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .fade-up-1 { animation: fadeUp 0.5s ease both; }
-        .fade-up-2 { animation: fadeUp 0.5s 0.08s ease both; }
+
+        .fade-up-1 {
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .fade-up-2 {
+            animation: fadeUp 0.5s 0.08s ease both;
+        }
 
         .field-error {
             margin-top: 6px;
@@ -95,7 +173,7 @@
             height: 44px;
             border-radius: 9999px;
             border: 1px solid transparent;
-            background: rgba(255,237,187,0.8);
+            background: rgba(255, 237, 187, 0.8);
             color: #6b5533;
             font-size: 14px;
             display: inline-flex;
@@ -114,7 +192,7 @@
             background: #fff3a3;
             border-color: #d4a800;
             color: #3d3530;
-            box-shadow: 0 0 0 4px rgba(212,168,0,0.12);
+            box-shadow: 0 0 0 4px rgba(212, 168, 0, 0.12);
         }
 
         .wizard-pill.completed {
@@ -144,8 +222,6 @@
 
 <body class="text-warm font-body antialiased min-h-screen pb-32 lg:pb-0" style="background:#FFFDF0;">
 
-
-
     {{-- NAVBAR --}}
     <nav class="sticky top-0 z-40 backdrop-blur border-b px-4 md:px-10 py-3 flex items-center gap-4"
         style="background:rgba(255,253,240,0.92); border-color:#FFE566;">
@@ -172,11 +248,11 @@
             <div class="fade-up-1">
                 {{-- Image --}}
                 <div class="room-img-wrap relative rounded-2xl overflow-hidden mb-5 shadow-md" style="height:280px;">
-                    <img src="{{ asset($room->image ?? 'assets/images/pRoom.png') }}"
-                        alt="{{ $roomName ?? 'Room' }}"
+                    <img src="{{ asset($room->image ?? 'assets/images/pRoom.png') }}" alt="{{ $roomName ?? 'Room' }}"
                         class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                    <span class="absolute top-4 right-4 text-xs font-medium px-4 py-1.5 rounded-full tracking-widest uppercase"
+                    <span
+                        class="absolute top-4 right-4 text-xs font-medium px-4 py-1.5 rounded-full tracking-widest uppercase"
                         style="background:#1C1C1E; color:#FAF7F2;">
                         {{ $roomName ?? 'Standard' }}
                     </span>
@@ -214,7 +290,7 @@
                 <div>
                     <p class="text-xs font-medium tracking-widest uppercase mb-3" style="color:#B89200;">Amenities</p>
                     <div class="grid grid-cols-2 gap-y-2 gap-x-4">
-                        @foreach($room->amenities ?? ['Air Conditioning','Cable TV','Toilet','Bathtub','High-Speed WiFi','Private Bathroom','Work Desk'] as $amenity)
+                        @foreach ($room->amenities ?? ['Air Conditioning', 'Cable TV', 'Toilet', 'Bathtub', 'High-Speed WiFi', 'Private Bathroom', 'Work Desk'] as $amenity)
                             <div class="flex items-center gap-2 text-sm text-warm">
                                 <i class="fas fa-check" style="font-size:11px; flex-shrink:0; color:#D4A800;"></i>
                                 {{ $amenity }}
@@ -228,7 +304,8 @@
 
                 @if ($errors->any())
                     <div class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-                        <p class="font-semibold text-sm mb-1">We couldn’t submit your booking because of these issues:</p>
+                        <p class="font-semibold text-sm mb-1">We couldn’t submit your booking because of these issues:
+                        </p>
                         <ul class="list-disc pl-5 text-sm space-y-1">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -237,20 +314,34 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('customize.login.with.booking') }}" id="booking-wizard-form" class="bg-white rounded-2xl shadow-sm overflow-hidden" style="border:1px solid #FFE566;" enctype="multipart/form-data" data-confirm-leave>
+                @php
+                    $selectedFloor = old('floor_level', $defaultFloor ?? 'Floor 1');
+                    if (!($floorAvailability[$selectedFloor]['available'] ?? false)) {
+                        $selectedFloor = $defaultFloor;
+                    }
+                @endphp
+                <form method="POST" action="{{ route('customize.login.with.booking') }}" id="booking-wizard-form"
+                    class="bg-white rounded-2xl shadow-sm overflow-hidden" style="border:1px solid #FFE566;"
+                    enctype="multipart/form-data" data-confirm-leave>
                     @csrf
                     <input type="hidden" name="room_type" value="{{ $roomName ?? '' }}">
                     <input type="hidden" name="room_type_slug" value="{{ $roomType ?? '' }}">
                     <input type="hidden" name="check_in" id="check_in" value="{{ old('check_in') }}">
                     <input type="hidden" name="check_out" id="check_out" value="{{ old('check_out') }}">
-                    <input type="hidden" name="number_of_guests" id="input-guests" value="{{ old('number_of_guests', 1) }}">
+                    <input type="hidden" name="number_of_guests" id="input-guests"
+                        value="{{ old('number_of_guests', 1) }}">
                     <input type="hidden" name="nights" id="input-nights" value="{{ old('nights', 0) }}">
-                    <input type="hidden" name="floor_level" id="input-floor" value="{{ old('floor_level', 'Floor 1') }}">
-                    <input type="hidden" name="ambiance" id="input-ambiance" value="{{ old('ambiance', 'Regular Room') }}">
-                    <input type="hidden" name="food_package" id="input-food" value="{{ old('food_package', 'No Food') }}">
+                    <input type="hidden" name="floor_level" id="input-floor"
+                        value="{{ $selectedFloor }}">
+                    <input type="hidden" name="ambiance" id="input-ambiance"
+                        value="{{ old('ambiance', 'Regular Room') }}">
+                    <input type="hidden" name="food_package" id="input-food"
+                        value="{{ old('food_package', 'No Food') }}">
                     <input type="hidden" name="room_price" value="{{ $price }}">
-                    <input type="hidden" name="micro_pricing_amount" id="input-addons" value="{{ old('micro_pricing_amount', 0) }}">
-                    <input type="hidden" name="total_price" id="input-total" value="{{ old('total_price', $price) }}">
+                    <input type="hidden" name="micro_pricing_amount" id="input-addons"
+                        value="{{ old('micro_pricing_amount', 0) }}">
+                    <input type="hidden" name="total_price" id="input-total"
+                        value="{{ old('total_price', $price) }}">
 
                     <div class="bg-white rounded-2xl shadow-sm overflow-hidden" style="border:1px solid #FFE566;">
                         <div class="px-6 py-5 bg-gradient-to-bl from-amber-300 to-amber-500">
@@ -260,25 +351,29 @@
                             </p>
                             <div class="grid grid-cols-4 gap-6 mt-5">
                                 <div class="wizard-step-pill" data-step="1">
-                                    <button type="button" class="wizard-pill active" data-step-btn="1" onclick="goToStep(1)">
+                                    <button type="button" class="wizard-pill active" data-step-btn="1"
+                                        onclick="goToStep(1)">
                                         <span class="wizard-pill-number">1</span>
                                     </button>
                                     <span class="wizard-pill-label">Options</span>
                                 </div>
                                 <div class="wizard-step-pill" data-step="2">
-                                    <button type="button" class="wizard-pill" data-step-btn="2" onclick="goToStep(2)" disabled>
+                                    <button type="button" class="wizard-pill" data-step-btn="2"
+                                        onclick="goToStep(2)" disabled>
                                         <span class="wizard-pill-number">2</span>
                                     </button>
                                     <span class="wizard-pill-label">Details</span>
                                 </div>
                                 <div class="wizard-step-pill" data-step="3">
-                                    <button type="button" class="wizard-pill" data-step-btn="3" onclick="goToStep(3)" disabled>
+                                    <button type="button" class="wizard-pill" data-step-btn="3"
+                                        onclick="goToStep(3)" disabled>
                                         <span class="wizard-pill-number">3</span>
                                     </button>
                                     <span class="wizard-pill-label">ID</span>
                                 </div>
                                 <div class="wizard-step-pill" data-step="4">
-                                    <button type="button" class="wizard-pill" data-step-btn="4" onclick="goToStep(4)" disabled>
+                                    <button type="button" class="wizard-pill" data-step-btn="4"
+                                        onclick="goToStep(4)" disabled>
                                         <span class="wizard-pill-number">4</span>
                                     </button>
                                     <span class="wizard-pill-label">Review</span>
@@ -289,306 +384,560 @@
                         <div class="px-6 py-6 space-y-7">
                             <div class="wizard-step" data-step="1">
                                 <div class="section-label mb-3">
-                                    <span class="text-xs font-medium tracking-widest uppercase text-charcoal">Step 1: Select your stay</span>
+                                    <span class="text-xs font-medium tracking-widest uppercase text-charcoal">Step 1:
+                                        Select your stay</span>
                                 </div>
                                 <div class="space-y-6">
                                     <div>
                                         <div class="section-label mb-3">
-                                            <span class="text-xs font-medium tracking-widest uppercase text-charcoal">Guests</span>
+                                            <span
+                                                class="text-xs font-medium tracking-widest uppercase text-charcoal">Guests</span>
                                         </div>
                                         <div class="flex items-center gap-3">
-                                            <button type="button" onclick="stepGuests(-1)" class="w-10 h-10 rounded-xl border flex items-center justify-center text-lg font-semibold text-warm transition hover:bg-yellow-50" style="border-color:#FFE566;">−</button>
-                                            <input type="number" id="pax_count" value="{{ old('number_of_guests', 1) }}" min="1" max="{{ $room->capacity ?? 10 }}" class="flex-1 border rounded-xl py-2.5 text-center text-sm font-semibold text-charcoal" style="border-color:#FFE566; background:#FFF8D6;">
-                                            <button type="button" onclick="stepGuests(1)" class="w-10 h-10 rounded-xl border flex items-center justify-center text-lg font-semibold text-warm transition hover:bg-yellow-50" style="border-color:#FFE566;">+</button>
+                                            <button type="button" onclick="stepGuests(-1)"
+                                                class="w-10 h-10 rounded-xl border flex items-center justify-center text-lg font-semibold text-warm transition hover:bg-yellow-50"
+                                                style="border-color:#FFE566;">−</button>
+                                            <input type="number" id="pax_count"
+                                                value="{{ old('number_of_guests', 1) }}" min="1"
+                                                max="{{ $room->capacity ?? 10 }}"
+                                                class="flex-1 border rounded-xl py-2.5 text-center text-sm font-semibold text-charcoal"
+                                                style="border-color:#FFE566; background:#FFF8D6;">
+                                            <button type="button" onclick="stepGuests(1)"
+                                                class="w-10 h-10 rounded-xl border flex items-center justify-center text-lg font-semibold text-warm transition hover:bg-yellow-50"
+                                                style="border-color:#FFE566;">+</button>
                                         </div>
                                         @error('number_of_guests')
-                                            <p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>
+                                            <p class="field-error"><i
+                                                    class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                            </p>
                                         @enderror
                                     </div>
 
                                     <div>
                                         <div class="section-label mb-3">
-                                            <span class="text-xs font-medium tracking-widest uppercase text-charcoal">Dates</span>
+                                            <span
+                                                class="text-xs font-medium tracking-widest uppercase text-charcoal">Dates</span>
                                         </div>
                                         @php
                                             $oldDateRange = '';
                                             if (old('check_in') && old('check_out')) {
                                                 try {
-                                                    $oldDateRange = \Carbon\Carbon::parse(old('check_in'))->format('M j, Y') . ' - ' . \Carbon\Carbon::parse(old('check_out'))->format('M j, Y');
+                                                    $oldDateRange =
+                                                        \Carbon\Carbon::parse(old('check_in'))->format('M j, Y') .
+                                                        ' - ' .
+                                                        \Carbon\Carbon::parse(old('check_out'))->format('M j, Y');
                                                 } catch (\Throwable $e) {
                                                     $oldDateRange = '';
                                                 }
                                             }
                                         @endphp
-                                        <input type="text" id="booking_range" placeholder="Select check-in → check-out" readonly value="{{ $oldDateRange }}" class="w-full border rounded-xl px-4 py-3 text-sm text-warm cursor-pointer" style="border-color:#FFE566; background:#FFF8D6;">
-                                        <p id="nights-badge" class="hidden mt-2 text-xs font-medium" style="color:#B89200;"><i class="fas fa-moon mr-1"></i><span id="nights-label"></span></p>
-                                        @error('check_in')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
-                                        @error('check_out')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
-                                        @error('nights')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
+                                        <input type="text" id="booking_range"
+                                            placeholder="Select check-in → check-out" readonly
+                                            value="{{ $oldDateRange }}"
+                                            class="w-full border rounded-xl px-4 py-3 text-sm text-warm cursor-pointer"
+                                            style="border-color:#FFE566; background:#FFF8D6;">
+                                        <p id="nights-badge" class="hidden mt-2 text-xs font-medium"
+                                            style="color:#B89200;"><i class="fas fa-moon mr-1"></i><span
+                                                id="nights-label"></span></p>
+                                        @error('check_in')
+                                            <p class="field-error"><i
+                                                    class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                            </p>
+                                        @enderror
+                                        @error('check_out')
+                                            <p class="field-error"><i
+                                                    class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                            </p>
+                                        @enderror
+                                        @error('nights')
+                                            <p class="field-error"><i
+                                                    class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                            </p>
+                                        @enderror
                                     </div>
 
                                     <div>
-                                        <div class="section-label mb-3"><span class="text-xs font-medium tracking-widest uppercase text-charcoal">Floor Level</span></div>
+                                        <div class="section-label mb-3">
+                                            <span
+                                                class="text-xs font-medium tracking-widest uppercase text-charcoal">Floor
+                                                Level</span>
+                                        </div>
                                         <div class="space-y-2">
-                                            @php $selectedFloor = old('floor_level', 'Floor 1'); @endphp
                                             @foreach (['Floor 1', 'Floor 2', 'Floor 4'] as $floor)
-                                                <div class="option-row {{ $selectedFloor === $floor ? 'selected' : '' }} flex items-center border rounded-xl px-4 py-3" style="border-color:{{ $selectedFloor === $floor ? '#D4A800' : '#FFE566' }};" data-group="floor_level" data-price="0">
+                                                @php
+                                                    $floorState = $floorAvailability[$floor] ?? ['available' => false, 'unavailable' => true];
+                                                    $isDisabled = !$floorState['available'];
+                                                    $isSelected = $selectedFloor === $floor && !$isDisabled;
+                                                @endphp
+                                                <div class="option-row {{ $isSelected ? 'selected' : '' }} {{ $isDisabled ? 'opacity-50 cursor-not-allowed bg-gray-100 pointer-events-none' : 'cursor-pointer' }} flex items-center justify-between border rounded-xl px-4 py-3"
+                                                    style="border-color: {{ $isDisabled ? '#E5E7EB' : ($isSelected ? '#D4A800' : '#FFE566') }};"
+                                                    data-group="floor_level" data-value="{{ $floor }}"
+                                                    data-available="{{ $floorState['available'] ? 'true' : 'false' }}"
+                                                    data-price="0">
                                                     <div class="flex items-center gap-3">
-                                                        <span class="dot w-2 h-2 rounded-full flex-shrink-0" style="background:#D4A800;"></span>
-                                                        <span class="text-sm {{ $selectedFloor === $floor ? 'font-medium' : '' }} text-warm">{{ $floor }}</span>
+                                                        <span class="dot w-2 h-2 rounded-full flex-shrink-0"
+                                                            style="background: {{ $isDisabled ? '#9CA3AF' : '#D4A800' }};"></span>
+                                                        <span
+                                                            class="floor-name text-sm {{ $isSelected ? 'font-medium' : '' }} {{ $isDisabled ? 'text-gray-400' : 'text-warm' }}">
+                                                            {{ $floor }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="floor-status">
+                                                        @if ($isDisabled)
+                                                            <span
+                                                                class="fully-booked-badge text-xs font-semibold text-red-500 bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                                                                {{ $floorState['unavailable'] ? 'Unavailable for this room type' : 'Fully Booked' }}
+                                                            </span>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @endforeach
                                         </div>
-                                        @error('floor_level')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
-                                    </div>
+                                        @error('floor_level')
+                                            <p class="field-error">
+                                                <i class="fas fa-circle-exclamation"></i>
+                                                <span>{{ $message }}</span>
+                                            </p>
+                                        @enderror
 
-                                    <div>
-                                        <div class="section-label mb-3"><span class="text-xs font-medium tracking-widest uppercase text-charcoal">Ambiance</span></div>
-                                        <div class="space-y-2">
-                                            @php $selectedAmbiance = old('ambiance', 'Regular Room'); @endphp
-                                            @foreach ([['label' => 'Regular Room', 'price' => 0], ['label' => 'Cozy Ambiance', 'price' => 500], ['label' => 'Romantic Ambiance', 'price' => 1000]] as $ambiance)
-                                                <div class="option-row {{ $selectedAmbiance === $ambiance['label'] ? 'selected' : '' }} flex items-center justify-between border rounded-xl px-4 py-3" style="border-color:{{ $selectedAmbiance === $ambiance['label'] ? '#D4A800' : '#FFE566' }};" data-group="ambiance" data-price="{{ $ambiance['price'] }}">
-                                                    <div class="flex items-center gap-3"><span class="dot w-2 h-2 rounded-full flex-shrink-0" style="background:#D4A800;"></span><span class="text-sm {{ $selectedAmbiance === $ambiance['label'] ? 'font-medium' : '' }} text-warm">{{ $ambiance['label'] }}</span></div>
-                                                    <span class="badge text-xs font-medium px-3 py-1 rounded-full" style="background:{{ $selectedAmbiance === $ambiance['label'] ? '#FFF3A3' : '#FFF8D6' }}; color:{{ $selectedAmbiance === $ambiance['label'] ? '#B89200' : '#7A6E68' }};">{{ $ambiance['price'] == 0 ? 'Base' : '+ ₱' . number_format($ambiance['price']) }}</span>
-                                                </div>
-                                            @endforeach
+                                        <div>
+                                            <div class="section-label mb-3"><span
+                                                    class="text-xs font-medium tracking-widest uppercase text-charcoal">Ambiance</span>
+                                            </div>
+                                            <div class="space-y-2">
+                                                @php $selectedAmbiance = old('ambiance', 'Regular Room'); @endphp
+                                                @foreach ([['label' => 'Regular Room', 'price' => 0], ['label' => 'Cozy Ambiance', 'price' => 500], ['label' => 'Romantic Ambiance', 'price' => 1000]] as $ambiance)
+                                                    <div class="option-row {{ $selectedAmbiance === $ambiance['label'] ? 'selected' : '' }} flex items-center justify-between border rounded-xl px-4 py-3"
+                                                        style="border-color:{{ $selectedAmbiance === $ambiance['label'] ? '#D4A800' : '#FFE566' }};"
+                                                        data-group="ambiance" data-price="{{ $ambiance['price'] }}">
+                                                        <div class="flex items-center gap-3"><span
+                                                                class="dot w-2 h-2 rounded-full flex-shrink-0"
+                                                                style="background:#D4A800;"></span><span
+                                                                class="text-sm {{ $selectedAmbiance === $ambiance['label'] ? 'font-medium' : '' }} text-warm">{{ $ambiance['label'] }}</span>
+                                                        </div>
+                                                        <span class="badge text-xs font-medium px-3 py-1 rounded-full"
+                                                            style="background:{{ $selectedAmbiance === $ambiance['label'] ? '#FFF3A3' : '#FFF8D6' }}; color:{{ $selectedAmbiance === $ambiance['label'] ? '#B89200' : '#7A6E68' }};">{{ $ambiance['price'] == 0 ? 'Base' : '+ ₱' . number_format($ambiance['price']) }}</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            @error('ambiance')
+                                                <p class="field-error"><i
+                                                        class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                                </p>
+                                            @enderror
                                         </div>
-                                        @error('ambiance')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
-                                    </div>
 
-                                    <div>
-                                        <div class="section-label mb-3"><span class="text-xs font-medium tracking-widest uppercase text-charcoal">Food Package</span></div>
-                                        <div class="space-y-2">
-                                            @php $selectedFood = old('food_package', 'No Food'); @endphp
-                                            @foreach ([['label' => 'No Food', 'price' => 0], ['label' => 'Cozy Dinner for Family', 'price' => 1500], ['label' => 'Romantic Dinner', 'price' => 1700]] as $food)
-                                                <div class="option-row {{ $selectedFood === $food['label'] ? 'selected' : '' }} flex items-center justify-between border rounded-xl px-4 py-3" style="border-color:{{ $selectedFood === $food['label'] ? '#D4A800' : '#FFE566' }};" data-group="food_package" data-price="{{ $food['price'] }}">
-                                                    <div class="flex items-center gap-3"><span class="dot w-2 h-2 rounded-full flex-shrink-0" style="background:#D4A800;"></span><span class="text-sm {{ $selectedFood === $food['label'] ? 'font-medium' : '' }} text-warm">{{ $food['label'] }}</span></div>
-                                                    <span class="badge text-xs font-medium px-3 py-1 rounded-full" style="background:{{ $selectedFood === $food['label'] ? '#FFF3A3' : '#FFF8D6' }}; color:{{ $selectedFood === $food['label'] ? '#B89200' : '#7A6E68' }};">{{ $food['price'] == 0 ? 'Free' : '+ ₱' . number_format($food['price']) }}</span>
-                                                </div>
-                                            @endforeach
+                                        <div>
+                                            <div class="section-label mb-3"><span
+                                                    class="text-xs font-medium tracking-widest uppercase text-charcoal">Food
+                                                    Package</span></div>
+                                            <div class="space-y-2">
+                                                @php $selectedFood = old('food_package', 'No Food'); @endphp
+                                                @foreach ([['label' => 'No Food', 'price' => 0], ['label' => 'Cozy Dinner for Family', 'price' => 1500], ['label' => 'Romantic Dinner', 'price' => 1700]] as $food)
+                                                    <div class="option-row {{ $selectedFood === $food['label'] ? 'selected' : '' }} flex items-center justify-between border rounded-xl px-4 py-3"
+                                                        style="border-color:{{ $selectedFood === $food['label'] ? '#D4A800' : '#FFE566' }};"
+                                                        data-group="food_package" data-price="{{ $food['price'] }}">
+                                                        <div class="flex items-center gap-3"><span
+                                                                class="dot w-2 h-2 rounded-full flex-shrink-0"
+                                                                style="background:#D4A800;"></span><span
+                                                                class="text-sm {{ $selectedFood === $food['label'] ? 'font-medium' : '' }} text-warm">{{ $food['label'] }}</span>
+                                                        </div>
+                                                        <span class="badge text-xs font-medium px-3 py-1 rounded-full"
+                                                            style="background:{{ $selectedFood === $food['label'] ? '#FFF3A3' : '#FFF8D6' }}; color:{{ $selectedFood === $food['label'] ? '#B89200' : '#7A6E68' }};">{{ $food['price'] == 0 ? 'Free' : '+ ₱' . number_format($food['price']) }}</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            @error('food_package')
+                                                <p class="field-error"><i
+                                                        class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                                </p>
+                                            @enderror
                                         </div>
-                                        @error('food_package')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
                                     </div>
-                                </div>
 
-                                <div class="pt-5" style="border-top:1px solid #FFE566;">
-                                    <div class="rounded-2xl p-4 space-y-2 mb-5" style="background:#FFF8D6; border:1px solid #FFE566;">
-                                        <div class="flex justify-between text-sm"><span class="text-muted">Rate / night</span><span class="font-medium text-charcoal">₱{{ number_format($price) }}</span></div>
-                                        <div class="flex justify-between text-sm"><span class="text-muted">Add-ons / night</span><span class="font-medium text-charcoal" id="addon-display">₱0</span></div>
-                                        <div class="flex justify-between text-sm"><span class="text-muted">Nights</span><span class="font-medium text-charcoal" id="nights-display">—</span></div>
-                                        <div class="pt-2 flex justify-between items-center" style="border-top:1px solid #FFE566;"><span class="text-xs tracking-widest uppercase text-muted">Total</span><span class="font-display text-2xl font-semibold price-bump" style="color:#B89200;" id="total-price">₱{{ number_format($price) }}</span></div>
+                                    <div class="pt-5" style="border-top:1px solid #FFE566;">
+                                        <div class="rounded-2xl p-4 space-y-2 mb-5"
+                                            style="background:#FFF8D6; border:1px solid #FFE566;">
+                                            <div class="flex justify-between text-sm"><span class="text-muted">Rate /
+                                                    night</span><span
+                                                    class="font-medium text-charcoal">₱{{ number_format($price) }}</span>
+                                            </div>
+                                            <div class="flex justify-between text-sm"><span class="text-muted">Add-ons
+                                                    / night</span><span class="font-medium text-charcoal"
+                                                    id="addon-display">₱0</span></div>
+                                            <div class="flex justify-between text-sm"><span
+                                                    class="text-muted">Nights</span><span
+                                                    class="font-medium text-charcoal" id="nights-display">—</span>
+                                            </div>
+                                            <div class="pt-2 flex justify-between items-center"
+                                                style="border-top:1px solid #FFE566;"><span
+                                                    class="text-xs tracking-widest uppercase text-muted">Total</span><span
+                                                    class="font-display text-2xl font-semibold price-bump"
+                                                    style="color:#B89200;"
+                                                    id="total-price">₱{{ number_format($price) }}</span></div>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-3">
+                                            <span class="text-sm text-muted">Step 1 of 4</span>
+                                            <button type="button" onclick="handleNextStep(1)"
+                                                class="ml-auto py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95 flex items-center justify-center gap-2"
+                                                style="background:#FFD000; color:#1C1C1E;">Continue to your
+                                                details</button>
+                                        </div>
+                                        <p class="text-center text-xs text-muted/70 mt-3">Free cancellation up to 24
+                                            hours before check-in</p>
                                     </div>
-                                    <div class="flex items-center justify-between gap-3">
-                                        <span class="text-sm text-muted">Step 1 of 4</span>
-                                        <button type="button" onclick="handleNextStep(1)" class="ml-auto py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95 flex items-center justify-center gap-2" style="background:#FFD000; color:#1C1C1E;">Continue to your details</button>
-                                    </div>
-                                    <p class="text-center text-xs text-muted/70 mt-3">Free cancellation up to 24 hours before check-in</p>
                                 </div>
                             </div>
 
                             <div class="wizard-step hidden" data-step="2">
-                                <div class="section-label mb-3">
-                                    <span class="text-xs font-medium tracking-widest uppercase text-charcoal" id="step2-heading">Step 2: Your information</span>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl mb-5" style="background:#FFF8D6; border:1px solid #FFE566;">
-                                    <button type="button" id="toggle-new-guest" onclick="setGuestMode('new')" class="py-2.5 rounded-xl text-sm font-medium transition-all">New Guest</button>
-                                    <button type="button" id="toggle-existing-guest" onclick="setGuestMode('existing')" class="py-2.5 rounded-xl text-sm font-medium transition-all">Returning Guest</button>
-                                </div>
-
-                                <input type="hidden" name="use_existing_account" id="use-existing-account" value="0">
-
-                                <div id="panel-new-guest" class="space-y-4">
-                                    <p class="text-sm text-muted">We only need this to keep your reservation secure and to create your account.</p>
-
-                                    <div>
-                                        <label class="block text-xs font-medium tracking-widest uppercase mb-1.5" style="color:#7A6E68;">Name</label>
-                                        <input type="text" name="name" id="wizard-name" value="{{ old('name') }}" placeholder="Your full name" class="w-full rounded-xl border px-4 py-3 text-sm text-warm" style="border-color:#FFE566; background:#FFF8D6;">
-                                        @error('name')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
+                                    <div class="section-label mb-3">
+                                        <span class="text-xs font-medium tracking-widest uppercase text-charcoal"
+                                            id="step2-heading">Step 2: Your
+                                            information</span>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-medium tracking-widest uppercase mb-1.5" style="color:#7A6E68;">Email Address</label>
-                                        <input type="email" name="email" id="wizard-email-new" value="{{ old('email') }}" placeholder="you@email.com" class="w-full rounded-xl border px-4 py-3 text-sm text-warm" style="border-color:#FFE566; background:#FFF8D6;">
-                                        <p class="field-error hidden" id="wizard-email-new-error"></p>
-                                        @error('email')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
+
+                                    <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl mb-5"
+                                        style="background:#FFF8D6; border:1px solid #FFE566;">
+                                        <button type="button" id="toggle-new-guest" onclick="setGuestMode('new')"
+                                            class="py-2.5 rounded-xl text-sm font-medium transition-all">New
+                                            Guest</button>
+                                        <button type="button" id="toggle-existing-guest"
+                                            onclick="setGuestMode('existing')"
+                                            class="py-2.5 rounded-xl text-sm font-medium transition-all">Returning
+                                            Guest</button>
                                     </div>
-                                    <div>
-                                        <div class="flex items-center justify-between mb-1.5">
-                                            <label class="block text-xs font-medium tracking-widest uppercase" style="color:#7A6E68;">Password</label>
-                                            <span class="text-xs text-muted">Minimum 8 characters</span>
+
+                                    <input type="hidden" name="use_existing_account" id="use-existing-account"
+                                        value="0">
+
+                                    <div id="panel-new-guest" class="space-y-4">
+                                        <p class="text-sm text-muted">We only need this to keep your reservation secure
+                                            and to create your account.
+                                        </p>
+
+                                        <div>
+                                            <label class="block text-xs font-medium tracking-widest uppercase mb-1.5"
+                                                style="color:#7A6E68;">Name</label>
+                                            <input type="text" name="name" id="wizard-name"
+                                                value="{{ old('name') }}" placeholder="Your full name"
+                                                class="w-full rounded-xl border px-4 py-3 text-sm text-warm"
+                                                style="border-color:#FFE566; background:#FFF8D6;">
+                                            <p class="field-error hidden" id="wizard-name-error"></p>
+                                            @error('name')
+                                                <p class="field-error"><i
+                                                        class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                                </p>
+                                            @enderror
                                         </div>
-                                        <div class="relative">
-                                            <input type="password" name="password" id="wizard-password-new" placeholder="••••••••" oninput="checkStrength(this.value)" class="w-full rounded-xl border px-4 py-3 text-sm text-warm pr-11" style="border-color:#FFE566; background:#FFF8D6;">
-                                            <button type="button" onclick="togglePasswordVisibility('wizard-password-new', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-warm/70 hover:text-warm transition">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
+                                        <div>
+                                            <label class="block text-xs font-medium tracking-widest uppercase mb-1.5"
+                                                style="color:#7A6E68;">Email
+                                                Address</label>
+                                            <input type="email" name="email" id="wizard-email-new"
+                                                value="{{ old('email') }}" placeholder="you@email.com"
+                                                class="w-full rounded-xl border px-4 py-3 text-sm text-warm"
+                                                style="border-color:#FFE566; background:#FFF8D6;">
+                                            <p class="field-error hidden" id="wizard-email-new-error"></p>
+                                            @error('email')
+                                                <p class="field-error"><i
+                                                        class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                                </p>
+                                            @enderror
                                         </div>
-                                        <div class="h-1 w-full bg-yellow-100 rounded-full overflow-hidden mt-2">
-                                            <div id="wizard-password-strength-bar" class="strength-bar h-full w-0 rounded-full bg-stone-300"></div>
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1.5">
+                                                <label class="block text-xs font-medium tracking-widest uppercase"
+                                                    style="color:#7A6E68;">Password</label>
+                                                <span class="text-xs text-muted">Minimum 8 characters</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="password" name="password" id="wizard-password-new"
+                                                    placeholder="••••••••" oninput="checkStrength(this.value)"
+                                                    class="w-full rounded-xl border px-4 py-3 text-sm text-warm pr-11"
+                                                    style="border-color:#FFE566; background:#FFF8D6;">
+                                                <button type="button"
+                                                    onclick="togglePasswordVisibility('wizard-password-new', this)"
+                                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-warm/70 hover:text-warm transition">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <div class="h-1 w-full bg-yellow-100 rounded-full overflow-hidden mt-2">
+                                                <div id="wizard-password-strength-bar"
+                                                    class="strength-bar h-full w-0 rounded-full bg-stone-300"></div>
+                                            </div>
+                                            <p id="wizard-password-strength-label"
+                                                class="text-xs text-stone-400 mt-1"></p>
+                                            <p class="field-error hidden" id="wizard-password-new-error"></p>
+                                            @error('password')
+                                                <p class="field-error"><i
+                                                        class="fas fa-circle-exclamation"></i><span>{{ $message }}</span>
+                                                </p>
+                                            @enderror
                                         </div>
-                                        <p id="wizard-password-strength-label" class="text-xs text-stone-400 mt-1"></p>
-                                        <p class="field-error hidden" id="wizard-password-new-error"></p>
-                                        @error('password')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-medium tracking-widest uppercase mb-1.5" style="color:#7A6E68;">Confirm Password</label>
-                                        <div class="relative">
-                                            <input type="password" id="wizard-password-confirmation" placeholder="••••••••" class="w-full rounded-xl border px-4 py-3 text-sm text-warm pr-11" style="border-color:#FFE566; background:#FFF8D6;">
-                                            <button type="button" onclick="togglePasswordVisibility('wizard-password-confirmation', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-warm/70 hover:text-warm transition">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
+                                        <div>
+                                            <label class="block text-xs font-medium tracking-widest uppercase mb-1.5"
+                                                style="color:#7A6E68;">Confirm
+                                                Password</label>
+                                            <div class="relative">
+                                                <input type="password" id="wizard-password-confirmation"
+                                                    placeholder="••••••••"
+                                                    class="w-full rounded-xl border px-4 py-3 text-sm text-warm pr-11"
+                                                    style="border-color:#FFE566; background:#FFF8D6;">
+                                                <button type="button"
+                                                    onclick="togglePasswordVisibility('wizard-password-confirmation', this)"
+                                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-warm/70 hover:text-warm transition">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <p class="field-error hidden" id="wizard-password-confirmation-error"></p>
                                         </div>
-                                        <p class="field-error hidden" id="wizard-password-confirmation-error"></p>
-                                    </div>
-                                </div>
-
-                                <div id="panel-existing-guest" class="space-y-4 hidden">
-                                    <p class="text-sm text-muted">Sign in with your account to reuse your saved details.</p>
-
-                                    <div>
-                                        <label class="block text-xs font-medium tracking-widest uppercase mb-1.5" style="color:#7A6E68;">Email Address</label>
-                                        <input type="email" id="wizard-email-existing" placeholder="you@email.com" class="w-full rounded-xl border px-4 py-3 text-sm text-warm" style="border-color:#FFE566; background:#FFF8D6;">
-                                        <p class="field-error hidden" id="wizard-email-existing-error"></p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-medium tracking-widest uppercase mb-1.5" style="color:#7A6E68;">Password</label>
-                                        <input type="password" id="wizard-password-existing" placeholder="••••••••" class="w-full rounded-xl border px-4 py-3 text-sm text-warm" style="border-color:#FFE566; background:#FFF8D6;">
-                                        <p class="field-error hidden" id="wizard-password-existing-error"></p>
-                                        <button type="button" onclick="handleForgotPassword()" class="mt-2 text-xs font-medium" style="color:#B89200;">Forgot your password?</button>
                                     </div>
 
-                                    <p class="field-error hidden" id="wizard-account-error"></p>
-                                    <p class="hidden text-xs font-medium" id="wizard-id-on-file-note" style="color:#B89200;"><i class="fas fa-check-circle mr-1"></i>Valid ID already on file — you'll skip the upload step.</p>
-                                </div>
+                                    <div id="panel-existing-guest" class="space-y-4 hidden">
+                                        <p class="text-sm text-muted">Sign in with your account to reuse your saved
+                                            details.</p>
 
-                                <div class="rounded-2xl p-4 bg-[#FFF8D6] border border-yellow-200 text-sm text-charcoal my-4">
-                                    <p class="font-semibold mb-2">Why we ask for this</p>
-                                    <p class="text-xs text-muted">Your information is used to secure your reservation, create your account, and make check-in faster. We store it securely and never share it without your consent.</p>
-                                </div>
+                                        <div>
+                                            <label class="block text-xs font-medium tracking-widest uppercase mb-1.5"
+                                                style="color:#7A6E68;">Email
+                                                Address</label>
+                                            <input type="email" name="email" id="wizard-email-existing"
+                                                placeholder="you@email.com"
+                                                class="w-full rounded-xl border px-4 py-3 text-sm text-warm"
+                                                style="border-color:#FFE566; background:#FFF8D6;">
+                                            <p class="field-error hidden" id="wizard-email-existing-error"></p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium tracking-widest uppercase mb-1.5"
+                                                style="color:#7A6E68;">Password</label>
+                                            <input type="password" name="password" id="wizard-password-existing"
+                                                placeholder="••••••••"
+                                                class="w-full rounded-xl border px-4 py-3 text-sm text-warm"
+                                                style="border-color:#FFE566; background:#FFF8D6;">
+                                            <p class="field-error hidden" id="wizard-password-existing-error"></p>
+                                            <button type="button" onclick="handleForgotPassword()"
+                                                class="mt-2 text-xs font-medium" style="color:#B89200;">Forgot your
+                                                password?</button>
+                                        </div>
 
-                                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-charcoal">
-                                    <p class="font-semibold mb-2">Your data privacy</p>
-                                    <p class="text-xs leading-5 text-slate-600">
-                                        We collect your name, email, password, and valid ID only to secure your reservation, verify your identity, and support check-in and guest communication.
-                                        This information is stored securely in our hotel system and used strictly for booking, verification, and service-related communication.
-                                        We do not sell or share your personal data with third parties without your consent, and you may request access, correction, or deletion of your information at the front desk or through our support team.
-                                    </p>
-                                </div>
+                                        <p class="field-error hidden" id="wizard-account-error"></p>
+                                        <p class="hidden text-xs font-medium" id="wizard-id-on-file-note"
+                                            style="color:#B89200;"><i class="fas fa-check-circle mr-1"></i>Valid ID
+                                            already on file — you'll skip the upload step.</p>
+                                    </div>
 
-                                <div class="flex items-center justify-between gap-3 mt-5">
-                                    <button type="button" onclick="goToStep(1)" class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95" style="background:#FFFFFF; color:#1C1C1E; border:1px solid #FFE566;">Back</button>
-                                    <button type="button" id="step2-continue-btn" onclick="handleNextStep(2)" class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95 flex items-center gap-2" style="background:#FFD000; color:#1C1C1E;">
-                                        <span id="step2-continue-label">Continue to ID upload</span>
-                                        <i class="fas fa-spinner fa-spin hidden" id="step2-spinner"></i>
-                                    </button>
-                                </div>
+                                    <div
+                                        class="rounded-2xl p-4 bg-[#FFF8D6] border border-yellow-200 text-sm text-charcoal my-4">
+                                        <p class="font-semibold mb-2">Why we ask for this</p>
+                                        <p class="text-xs text-muted">Your information is used to secure your
+                                            reservation, create your account, and
+                                            make check-in faster. We store it securely and never share it without your
+                                            consent.</p>
+                                    </div>
+
+                                    <div
+                                        class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-charcoal">
+                                        <p class="font-semibold mb-2">Your data privacy</p>
+                                        <p class="text-xs leading-5 text-slate-600">
+                                            We collect your name, email, password, and valid ID only to secure your
+                                            reservation, verify your identity, and
+                                            support check-in and guest communication.
+                                            This information is stored securely in our hotel system and used strictly
+                                            for booking, verification, and
+                                            service-related communication.
+                                            We do not sell or share your personal data with third parties without your
+                                            consent, and you may request
+                                            access, correction, or deletion of your information at the front desk or
+                                            through our support team.
+                                        </p>
+                                    </div>
+
+                                    <div class="flex items-center justify-between gap-3 mt-5">
+                                        <button type="button" onclick="goToStep(1)"
+                                            class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95"
+                                            style="background:#FFFFFF; color:#1C1C1E; border:1px solid #FFE566;">Back</button>
+                                        <button type="button" id="step2-continue-btn" onclick="handleNextStep(2)"
+                                            class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95 flex items-center gap-2"
+                                            style="background:#FFD000; color:#1C1C1E;">
+                                            <span id="step2-continue-label">Continue to ID upload</span>
+                                            <i class="fas fa-spinner fa-spin hidden" id="step2-spinner"></i>
+                                        </button>
+                                    </div>
                             </div>
 
                             <div class="wizard-step hidden" data-step="3">
-                                <div class="section-label mb-3"><span class="text-xs font-medium tracking-widest uppercase text-charcoal">Step 3: Upload a valid ID</span></div>
-                                <p class="text-sm text-muted">We verify your identity to protect your reservation and comply with hotel security requirements.</p>
+                                    <div class="section-label mb-3"><span
+                                            class="text-xs font-medium tracking-widest uppercase text-charcoal">Step
+                                            3: Upload a valid ID</span></div>
+                                    <p class="text-sm text-muted">We verify your identity to protect your reservation
+                                        and comply with hotel
+                                        security requirements.</p>
 
-                                <div class="mt-4">
-                                    <label class="block text-xs font-medium tracking-widest uppercase mb-1.5" style="color:#7A6E68;">ID Type</label>
-                                    <select name="id_type" id="id_type" class="w-full rounded-xl border px-4 py-3 text-sm text-warm" style="border-color:#FFE566; background:#FFF8D6;">
-                                        <option value="government_id">Philippine Government-issued ID</option>
-                                        <option value="drivers_license">Driver's License</option>
-                                        <option value="passport">Passport (Filipino or Foreign)</option>
-                                        <option value="visa">Visa / ACR I-Card (Foreign Nationals)</option>
-                                    </select>
-                                </div>
-
-                                <div class="rounded-2xl p-4 bg-[#FFF8D6] border border-yellow-200 mt-4">
-                                    <p class="font-semibold text-charcoal mb-2">Accepted documents</p>
-                                    <ul class="list-disc pl-5 text-xs text-muted space-y-1">
-                                        <li>Philippine government-issued ID (UMID, Postal ID, National ID, etc.)</li>
-                                        <li>Driver's license</li>
-                                        <li>Passport — Filipino or foreign nationals</li>
-                                        <li>Visa / Alien Certificate of Registration (ACR) I-Card — for foreign nationals</li>
-                                    </ul>
-                                    <p class="mt-3 text-xs text-warm">Upload is encrypted and stored securely for verification only.</p>
-                                </div>
-
-                                <label for="valid_id_path" class="mt-4 flex flex-col items-center justify-center gap-3 w-full rounded-xl border-2 border-dashed cursor-pointer transition-colors hover:bg-yellow-50" style="border-color:#FFE566; background:#FFF8D6; min-height:120px;">
-                                    <div id="id-upload-placeholder" class="flex flex-col items-center gap-2 my-3">
-                                        <i class="fas fa-id-card text-xl" style="color:#D4A800;"></i>
-                                        <span class="text-sm font-medium text-warm">Click or tap to upload a valid ID</span>
-                                        <span class="text-xs text-muted">JPG, PNG or PDF · max 5MB</span>
+                                    <div class="mt-4">
+                                        <label class="block text-xs font-medium tracking-widest uppercase mb-1.5"
+                                            style="color:#7A6E68;">ID
+                                            Type</label>
+                                        <select name="id_type" id="id_type"
+                                            class="w-full rounded-xl border px-4 py-3 text-sm text-warm"
+                                            style="border-color:#FFE566; background:#FFF8D6;">
+                                            <option value="government_id">Philippine Government-issued ID</option>
+                                            <option value="drivers_license">Driver's License</option>
+                                            <option value="passport">Passport (Filipino or Foreign)</option>
+                                            <option value="visa">Visa / ACR I-Card (Foreign Nationals)</option>
+                                        </select>
                                     </div>
 
-                                    <div id="id-upload-preview-wrap" class="hidden flex-col items-center gap-3 py-4">
-                                        <img id="id-upload-preview" src="" alt="ID preview" class="hidden rounded-lg border shadow-sm object-cover" style="width:280px; height:180px; border-color:#FFE566;" />
-                                        <div id="id-upload-preview-pdf" class="hidden flex-col items-center justify-center rounded-lg border" style="width:280px; height:180px; border-color:#FFE566; background:#fff;">
-                                            <i class="fas fa-file-pdf text-3xl" style="color:#D4A800;"></i>
-                                            <span class="text-xs text-muted mt-2">PDF Document</span>
-                                        </div>
-                                        <div class="flex flex-col items-center text-center">
-                                            <span class="text-xs font-medium text-warm" id="id-upload-name"></span>
-                                            <button type="button" class="text-xs text-red-500 mt-1" onclick="clearIdUpload()">Remove</button>
-                                        </div>
+                                    <div class="rounded-2xl p-4 bg-[#FFF8D6] border border-yellow-200 mt-4">
+                                        <p class="font-semibold text-charcoal mb-2">Accepted documents</p>
+                                        <ul class="list-disc pl-5 text-xs text-muted space-y-1">
+                                            <li>Philippine government-issued ID (UMID, Postal ID, National ID, etc.)
+                                            </li>
+                                            <li>Driver's license</li>
+                                            <li>Passport — Filipino or foreign nationals</li>
+                                            <li>Visa / Alien Certificate of Registration (ACR) I-Card — for foreign
+                                                nationals</li>
+                                        </ul>
+                                        <p class="mt-3 text-xs text-warm">Upload is encrypted and stored securely for
+                                            verification only.</p>
                                     </div>
 
-                                    <input type="file" name="valid_id_path" id="valid_id_path" accept="image/jpeg,image/png,application/pdf" class="hidden" onchange="handleIdUpload(this)">
-                                </label>
-                                <p class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1" id="id-upload-error"><i class="fas fa-circle-exclamation" style="font-size:10px;"></i><span></span></p>
-                                @error('valid_id_path')<p class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>@enderror
+                                    <label for="valid_id_path"
+                                        class="mt-4 flex flex-col items-center justify-center gap-3 w-full rounded-xl border-2 border-dashed cursor-pointer transition-colors hover:bg-yellow-50"
+                                        style="border-color:#FFE566; background:#FFF8D6; min-height:120px;">
+                                        <div id="id-upload-placeholder" class="flex flex-col items-center gap-2 my-3">
+                                            <i class="fas fa-id-card text-xl" style="color:#D4A800;"></i>
+                                            <span class="text-sm font-medium text-warm">Click or tap to upload a valid
+                                                ID</span>
+                                            <span class="text-xs text-muted">JPG, PNG or PDF · max 5MB</span>
+                                        </div>
 
-                                <div class="flex items-center justify-between gap-3 mt-5">
-                                    <button type="button" onclick="goToStep(2)" class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95" style="background:#FFFFFF; color:#1C1C1E; border:1px solid #FFE566;">Back</button>
-                                    <button type="button" onclick="handleNextStep(3)" class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95" style="background:#FFD000; color:#1C1C1E;">Continue to review</button>
-                                </div>
+                                        <div id="id-upload-preview-wrap"
+                                            class="hidden flex-col items-center gap-3 py-4">
+                                            <img id="id-upload-preview" src="" alt="ID preview"
+                                                class="hidden rounded-lg border shadow-sm object-cover"
+                                                style="width:280px; height:180px; border-color:#FFE566;" />
+                                            <div id="id-upload-preview-pdf"
+                                                class="hidden flex-col items-center justify-center rounded-lg border"
+                                                style="width:280px; height:180px; border-color:#FFE566; background:#fff;">
+                                                <i class="fas fa-file-pdf text-3xl" style="color:#D4A800;"></i>
+                                                <span class="text-xs text-muted mt-2">PDF Document</span>
+                                            </div>
+                                            <div class="flex flex-col items-center text-center">
+                                                <span class="text-xs font-medium text-warm"
+                                                    id="id-upload-name"></span>
+                                                <button type="button" class="text-xs text-red-500 mt-1"
+                                                    onclick="clearIdUpload()">Remove</button>
+                                            </div>
+                                        </div>
+
+                                        <input type="file" name="valid_id_path" id="valid_id_path"
+                                            accept="image/jpeg,image/png,application/pdf" class="hidden"
+                                            onchange="handleIdUpload(this)">
+                                    </label>
+                                    <p class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1"
+                                        id="id-upload-error"><i class="fas fa-circle-exclamation"
+                                            style="font-size:10px;"></i><span></span></p>
+                                    @error('valid_id_path')
+                                        <p class="field-error"><i
+                                                class="fas fa-circle-exclamation"></i><span>{{ $message }}</span></p>
+                                    @enderror
+
+                                    <div class="flex items-center justify-between gap-3 mt-5">
+                                        <button type="button" onclick="goToStep(2)"
+                                            class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95"
+                                            style="background:#FFFFFF; color:#1C1C1E; border:1px solid #FFE566;">Back</button>
+                                        <button type="button" onclick="handleNextStep(3)"
+                                            class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95"
+                                            style="background:#FFD000; color:#1C1C1E;">Continue to review</button>
+                                    </div>
                             </div>
 
                             <div class="wizard-step hidden" data-step="4">
-                                <div class="section-label mb-3"><span class="text-xs font-medium tracking-widest uppercase text-charcoal">Step 4: Review & confirm</span></div>
-                                <p class="text-sm text-muted">Review your booking details and confirm your final total.</p>
-                                <div class="rounded-2xl border border-yellow-100 bg-[#FFF8D6] p-4 space-y-3">
-                                    <div class="flex justify-between text-sm text-muted"><span>Room</span><span id="summary-room">{{ $roomName ?? 'Room' }}</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Dates</span><span id="summary-dates">—</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Guests</span><span id="summary-guests">1</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Floor</span><span id="summary-floor">Floor 1</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Ambiance</span><span id="summary-ambiance">Regular Room</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Food package</span><span id="summary-food">No Food</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Rate / night</span><span id="summary-rate">₱{{ number_format($price) }}</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Add-ons / night</span><span id="summary-addons">₱0</span></div>
-                                    <div class="flex justify-between text-sm text-muted"><span>Nights</span><span id="summary-nights">—</span></div>
-                                    <div class="pt-3 border-t border-yellow-200 flex justify-between items-center"><span class="text-xs uppercase tracking-[.18em] text-muted">Final total</span><span class="font-display text-2xl font-semibold text-charcoal" id="summary-total">₱{{ number_format($price) }}</span></div>
-                                    <p class="text-xs text-muted/70 pt-1">Final total is confirmed by the hotel upon submission.</p>
-                                </div>
-                                <div class="rounded-2xl p-4 bg-[#FFF8D6] border border-blue-200 text-sm text-charcoal my-4">
-                                    <p class="font-semibold mb-2">Secure handling</p>
-                                    <p class="text-xs text-muted">Your booking and ID are stored securely in our system and used only for reservation verification. We respect your privacy and protect your information.</p>
-                                </div>
-                                <div class="flex items-center justify-between gap-3">
-                                    <button type="button" onclick="goToStep(3)" class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95" style="background:#FFFFFF; color:#1C1C1E; border:1px solid #FFE566;">Back</button>
-                                    <button type="submit" id="final-submit-btn" class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed" style="background:#FFD000; color:#1C1C1E;">
-                                        <i class="fas fa-spinner fa-spin hidden" id="final-submit-spinner"></i>
-                                        <span id="final-submit-label">Confirm booking</span>
-                                    </button>
-                                </div>
+                                    <div class="section-label mb-3"><span
+                                            class="text-xs font-medium tracking-widest uppercase text-charcoal">Step
+                                            4: Review & confirm</span></div>
+                                    <p class="text-sm text-muted">Review your booking details and confirm your final
+                                        total.</p>
+                                    <div class="rounded-2xl border border-yellow-100 bg-[#FFF8D6] p-4 space-y-3">
+                                        <div class="flex justify-between text-sm text-muted"><span>Room</span><span
+                                                id="summary-room">{{ $roomName ?? 'Room' }}</span></div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Dates</span><span
+                                                id="summary-dates">—</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Guests</span><span
+                                                id="summary-guests">1</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Floor</span><span
+                                                id="summary-floor">Floor
+                                                1</span></div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Ambiance</span><span
+                                                id="summary-ambiance">Regular
+                                                Room</span></div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Food
+                                                package</span><span id="summary-food">No
+                                                Food</span></div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Rate /
+                                                night</span><span
+                                                id="summary-rate">₱{{ number_format($price) }}</span></div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Add-ons /
+                                                night</span><span id="summary-addons">₱0</span></div>
+                                        <div class="flex justify-between text-sm text-muted"><span>Nights</span><span
+                                                id="summary-nights">—</span>
+                                        </div>
+                                        <div class="pt-3 border-t border-yellow-200 flex justify-between items-center">
+                                            <span class="text-xs uppercase tracking-[.18em] text-muted">Final
+                                                total</span><span
+                                                class="font-display text-2xl font-semibold text-charcoal"
+                                                id="summary-total">₱{{ number_format($price) }}</span></div>
+                                        <p class="text-xs text-muted/70 pt-1">Final total is confirmed by the hotel
+                                            upon submission.</p>
+                                    </div>
+                                    <div
+                                        class="rounded-2xl p-4 bg-[#FFF8D6] border border-blue-200 text-sm text-charcoal my-4">
+                                        <p class="font-semibold mb-2">Secure handling</p>
+                                        <p class="text-xs text-muted">Your booking and ID are stored securely in our
+                                            system and used only for
+                                            reservation verification. We respect your privacy and protect your
+                                            information.</p>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-3">
+                                        <button type="button" onclick="goToStep(3)"
+                                            class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95"
+                                            style="background:#FFFFFF; color:#1C1C1E; border:1px solid #FFE566;">Back</button>
+                                        <button type="submit" id="final-submit-btn"
+                                            class="py-3.5 px-6 rounded-2xl font-medium text-sm transition-all active:scale-95 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                                            style="background:#FFD000; color:#1C1C1E;">
+                                            <i class="fas fa-spinner fa-spin hidden" id="final-submit-spinner"></i>
+                                            <span id="final-submit-label">Confirm booking</span>
+                                        </button>
+                                    </div>
                             </div>
                         </div>
-                    </div>
                 </form>
             </div>
 
         </div>
     </div>
 
-    <div id="dates-required-modal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/40 px-4 py-6" onclick="if (event.target === this) closeDatesRequiredModal()"  role="dialog" aria-modal="true" aria-labelledby="dates-required-title">
-    <div class="w-full max-w-md rounded-3xl bg-white border border-yellow-100 shadow-2xl overflow-hidden">
-        <div class="flex items-start justify-between gap-4 p-5">
-            <div>
-                <h3 id="dates-required-title" class="text-lg font-semibold text-charcoal">Booking dates required</h3>
-                <p class="mt-2 text-sm text-muted">Select your check-in and check-out dates to see pricing and continue.</p>
+    <div id="dates-required-modal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/40 px-4 py-6"
+        onclick="if (event.target === this) closeDatesRequiredModal()" role="dialog" aria-modal="true"
+        aria-labelledby="dates-required-title">
+        <div class="w-full max-w-md rounded-3xl bg-white border border-yellow-100 shadow-2xl overflow-hidden">
+            <div class="flex items-start justify-between gap-4 p-5">
+                <div>
+                    <h3 id="dates-required-title" class="text-lg font-semibold text-charcoal">Booking dates required
+                    </h3>
+                    <p class="mt-2 text-sm text-muted">Select your check-in and check-out dates to see pricing and
+                        continue.</p>
+                </div>
+                <button type="button" onclick="closeDatesRequiredModal()" aria-label="Close"
+                    class="text-xl text-warm leading-none">&times;</button>
             </div>
-            <button type="button" onclick="closeDatesRequiredModal()" aria-label="Close" class="text-xl text-warm leading-none">&times;</button>
+            <div class="flex justify-end border-t border-yellow-100 p-4">
+                <button type="button" onclick="closeDatesRequiredModal(); focusDatePicker();"
+                    class="rounded-2xl bg-yellow-100 px-4 py-2 text-sm font-semibold text-charcoal">Got it</button>
+            </div>
         </div>
-        <div class="flex justify-end border-t border-yellow-100 p-4">
-            <button type="button" onclick="closeDatesRequiredModal(); focusDatePicker();" class="rounded-2xl bg-yellow-100 px-4 py-2 text-sm font-semibold text-charcoal">Got it</button>
-        </div>
-    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/fecha@4.2.3/dist/fecha.min.js"></script>
@@ -597,6 +946,7 @@
     <script>
         const BASE_PRICE = {{ $price }};
         const disabledDates = @json($disabledDates);
+        const baseFloorAvailability = @json($floorAvailability);
         const accountCheckUrl = '{{ route('customize.account.check') }}';
 
         const groupAddons = {
@@ -611,6 +961,80 @@
 
         function parsePeso(text) {
             return Number(String(text).replace(/[₱,\s]/g, '')) || 0;
+        }
+
+        function applyFloorAvailability(availability) {
+            const rows = [...document.querySelectorAll('[data-group="floor_level"]')];
+            const selectedFloor = document.getElementById('input-floor').value;
+
+            rows.forEach(row => {
+                const floor = row.dataset.value;
+                const state = availability[floor] || {
+                    available: false,
+                    unavailable: true,
+                    fully_booked: false
+                };
+                const isDisabled = !state.available;
+                const dot = row.querySelector('.dot');
+                const label = row.querySelector('.floor-name');
+                const status = row.querySelector('.floor-status');
+
+                row.dataset.available = state.available ? 'true' : 'false';
+                row.classList.toggle('opacity-50', isDisabled);
+                row.classList.toggle('cursor-not-allowed', isDisabled);
+                row.classList.toggle('bg-gray-100', isDisabled);
+                row.classList.toggle('pointer-events-none', isDisabled);
+                row.classList.toggle('cursor-pointer', !isDisabled);
+                if (isDisabled) row.classList.remove('selected');
+                row.style.borderColor = isDisabled ? '#E5E7EB' : (row.classList.contains('selected') ? '#D4A800' : '#FFE566');
+
+                if (dot) dot.style.background = isDisabled ? '#9CA3AF' : '#D4A800';
+                if (label) {
+                    label.classList.toggle('text-gray-400', isDisabled);
+                    label.classList.toggle('text-warm', !isDisabled);
+                    label.classList.toggle('font-medium', !isDisabled && row.classList.contains('selected'));
+                }
+
+                if (status) {
+                    status.replaceChildren();
+                    if (isDisabled) {
+                        const badge = document.createElement('span');
+                        badge.className = 'fully-booked-badge text-xs font-semibold text-red-500 bg-red-50 px-2 py-0.5 rounded border border-red-200';
+                        badge.textContent = state.unavailable ? 'Unavailable for this room type' : 'Fully Booked';
+                        status.appendChild(badge);
+                    }
+                }
+            });
+
+            const selectedRow = rows.find(row => row.dataset.value === selectedFloor && row.dataset.available === 'true');
+            const nextFloor = selectedRow || rows.find(row => row.dataset.available === 'true');
+            rows.forEach(row => {
+                const isSelected = row === nextFloor;
+                row.classList.toggle('selected', isSelected);
+                row.style.borderColor = row.dataset.available !== 'true' ? '#E5E7EB' : (isSelected ? '#D4A800' : '#FFE566');
+                row.querySelector('.floor-name')?.classList.toggle('font-medium', isSelected);
+            });
+            document.getElementById('input-floor').value = nextFloor ? nextFloor.dataset.value : '';
+        }
+
+        async function updateFloorAvailability(checkIn, checkOut) {
+            const baseUrl = "{{ route('booking.check-floors', ['roomType' => ':roomType']) }}"
+                .replace(':roomType', encodeURIComponent('{{ $roomType }}'));
+            const params = new URLSearchParams({ check_in: checkIn, check_out: checkOut });
+
+            try {
+                const response = await fetch(`${baseUrl}?${params}`, {
+                    headers: { Accept: 'application/json' }
+                });
+                if (!response.ok) {
+                    throw new Error(`Floor availability request failed (${response.status}).`);
+                }
+
+                const data = await response.json();
+                applyFloorAvailability(data.floors);
+            } catch (error) {
+                console.error('Unable to update floor availability:', error);
+            }
         }
 
         function recalcTotal() {
@@ -661,11 +1085,14 @@
             document.getElementById('summary-dates').textContent =
                 document.getElementById('booking_range').value || '—';
             document.getElementById('summary-guests').textContent = document.getElementById('input-guests').value || '1';
-            document.getElementById('summary-floor').textContent = document.getElementById('input-floor').value || 'Floor 1';
-            document.getElementById('summary-ambiance').textContent = document.getElementById('input-ambiance').value || 'Regular Room';
+            document.getElementById('summary-floor').textContent = document.getElementById('input-floor').value ||
+            'Floor 1';
+            document.getElementById('summary-ambiance').textContent = document.getElementById('input-ambiance').value ||
+                'Regular Room';
             document.getElementById('summary-food').textContent = document.getElementById('input-food').value || 'No Food';
             document.getElementById('summary-rate').textContent = '₱' + BASE_PRICE.toLocaleString();
-            document.getElementById('summary-addons').textContent = '₱' + ((groupAddons.ambiance || 0) + (groupAddons.food_package || 0)).toLocaleString();
+            document.getElementById('summary-addons').textContent = '₱' + ((groupAddons.ambiance || 0) + (groupAddons
+                .food_package || 0)).toLocaleString();
             document.getElementById('summary-nights').textContent = selectedNights > 0 ? selectedNights : '—';
             document.getElementById('summary-total').textContent = document.getElementById('total-price').textContent;
         }
@@ -717,19 +1144,27 @@
             currentGuestMode = mode;
             const isNew = mode === 'new';
 
-            document.getElementById('panel-new-guest').classList.toggle('hidden', !isNew);
-            document.getElementById('panel-existing-guest').classList.toggle('hidden', isNew);
+            const newPanel = document.getElementById('panel-new-guest');
+            const existingPanel = document.getElementById('panel-existing-guest');
+            newPanel.classList.toggle('hidden', !isNew);
+            existingPanel.classList.toggle('hidden', isNew);
+            newPanel.querySelectorAll('input, select, textarea').forEach(input => {
+                input.disabled = !isNew;
+            });
+            existingPanel.querySelectorAll('input, select, textarea').forEach(input => {
+                input.disabled = isNew;
+            });
             document.getElementById('use-existing-account').value = isNew ? '0' : '1';
 
-            document.getElementById('toggle-new-guest').style.cssText = isNew
-                ? 'background:#FFD000; color:#1C1C1E;' : 'background:transparent; color:#7A6E68;';
-            document.getElementById('toggle-existing-guest').style.cssText = !isNew
-                ? 'background:#FFD000; color:#1C1C1E;' : 'background:transparent; color:#7A6E68;';
+            document.getElementById('toggle-new-guest').style.cssText = isNew ?
+                'background:#FFD000; color:#1C1C1E;' : 'background:transparent; color:#7A6E68;';
+            document.getElementById('toggle-existing-guest').style.cssText = !isNew ?
+                'background:#FFD000; color:#1C1C1E;' : 'background:transparent; color:#7A6E68;';
 
-            document.getElementById('step2-heading').textContent = isNew
-                ? 'Step 2: Create your account' : 'Step 2: Sign in';
-            document.getElementById('step2-continue-label').textContent = isNew
-                ? 'Continue to ID upload' : 'Sign in and continue';
+            document.getElementById('step2-heading').textContent = isNew ?
+                'Step 2: Create your account' : 'Step 2: Sign in';
+            document.getElementById('step2-continue-label').textContent = isNew ?
+                'Continue to ID upload' : 'Sign in and continue';
 
             hideAccountError();
             document.getElementById('wizard-id-on-file-note').classList.add('hidden');
@@ -751,7 +1186,7 @@
         }
 
         function handleForgotPassword() {
-            window.location.href = '/forgot-password';
+            window.location.href = '/password/forgot-password';
         }
 
         function togglePasswordVisibility(inputId, button) {
@@ -774,12 +1209,31 @@
             if (/[0-9]/.test(val)) score++;
             if (/[^A-Za-z0-9]/.test(val)) score++;
 
-            const map = [
-                { w: '0%', color: 'bg-stone-200', text: '' },
-                { w: '33%', color: 'bg-red-400', text: 'Weak' },
-                { w: '66%', color: 'bg-amber-400', text: 'Fair' },
-                { w: '85%', color: 'bg-lime-500', text: 'Good' },
-                { w: '100%', color: 'bg-green-500', text: 'Strong' },
+            const map = [{
+                    w: '0%',
+                    color: 'bg-stone-200',
+                    text: ''
+                },
+                {
+                    w: '33%',
+                    color: 'bg-red-400',
+                    text: 'Weak'
+                },
+                {
+                    w: '66%',
+                    color: 'bg-amber-400',
+                    text: 'Fair'
+                },
+                {
+                    w: '85%',
+                    color: 'bg-lime-500',
+                    text: 'Good'
+                },
+                {
+                    w: '100%',
+                    color: 'bg-green-500',
+                    text: 'Strong'
+                },
             ];
 
             const s = map[score];
@@ -789,23 +1243,21 @@
             label.className = `text-xs ${score <= 1 ? 'text-red-400' : score === 2 ? 'text-amber-500' : 'text-green-600'}`;
         }
 
-        function finalizeStep2Fields(mode) {
-            if (mode === 'existing') {
-                document.getElementById('wizard-email-new').value = document.getElementById('wizard-email-existing').value.trim();
-                document.getElementById('wizard-password-new').value = document.getElementById('wizard-password-existing').value;
-            }
-        }
-
         async function handleStep2Continue() {
             document.querySelectorAll('#panel-new-guest .field-error, #panel-existing-guest .field-error')
                 .forEach(el => el.classList.add('hidden'));
 
             if (currentGuestMode === 'new') {
+                const name = document.getElementById('wizard-name');
                 const email = document.getElementById('wizard-email-new');
                 const password = document.getElementById('wizard-password-new');
                 const confirm = document.getElementById('wizard-password-confirmation');
                 let hasError = false;
 
+                if (!name.value.trim()) {
+                    showFieldError('wizard-name-error', 'Enter your full name.');
+                    hasError = true;
+                }
                 if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
                     showFieldError('wizard-email-new-error', 'Enter a valid email address.');
                     hasError = true;
@@ -829,12 +1281,18 @@
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                             'Accept': 'application/json',
                         },
-                        body: JSON.stringify({ email: email.value.trim(), password: password.value, use_existing_account: false })
+                        body: JSON.stringify({
+                            email: email.value.trim(),
+                            password: password.value,
+                            use_existing_account: false
+                        })
                     });
                     const data = await res.json();
 
                     if (!res.ok) {
-                        showFieldError('wizard-email-new-error', data.message || (data.errors && data.errors.email && data.errors.email[0]) || 'That email is already registered.');
+                        showFieldError('wizard-email-new-error', data.message || (data.errors && data.errors.email &&
+                            data
+                            .errors.email[0]) || 'That email is already registered.');
                         return;
                     }
 
@@ -870,18 +1328,22 @@
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                             'Accept': 'application/json',
                         },
-                        body: JSON.stringify({ email: email.value.trim(), password: password.value, use_existing_account: true })
+                        body: JSON.stringify({
+                            email: email.value.trim(),
+                            password: password.value,
+                            use_existing_account: true
+                        })
                     });
                     const data = await res.json();
 
                     if (!res.ok) {
-                        const message = data.message || (data.errors && data.errors.email && data.errors.email[0]) || 'We could not find an account with those credentials.';
+                        const message = data.message || (data.errors && data.errors.email && data.errors.email[0]) ||
+                            'We could not find an account with those credentials.';
                         document.getElementById('wizard-account-error').textContent = message;
                         document.getElementById('wizard-account-error').classList.remove('hidden');
                         return;
                     }
 
-                    finalizeStep2Fields('existing');
                     syncBookingToHiddenFields();
 
                     if (data.requires_id_upload) {
@@ -891,7 +1353,8 @@
                         advanceToStep(4);
                     }
                 } catch (e) {
-                    document.getElementById('wizard-account-error').textContent = 'Something went wrong. Please try again.';
+                    document.getElementById('wizard-account-error').textContent =
+                        'Something went wrong. Please try again.';
                     document.getElementById('wizard-account-error').classList.remove('hidden');
                 } finally {
                     setStep2Loading(false);
@@ -951,7 +1414,7 @@
             bookingRange.click();
         }
 
-        document.addEventListener('keydown', function (e) {
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeDatesRequiredModal();
             }
@@ -969,11 +1432,10 @@
             e.stopPropagation();
         });
 
-        // datepicker
+        // Datepicker initialisation
         const datepicker = new HotelDatepicker(document.getElementById('booking_range'), {
             format: 'MMM D, YYYY',
             minNights: 1,
-            // maxNights: 20,
             disabledDates: disabledDates,
             clearButton: true,
             selectForward: true,
@@ -989,17 +1451,25 @@
                     document.getElementById('nights-badge').classList.add('hidden');
                     syncBookingToHiddenFields();
                     recalcTotal();
+                    applyFloorAvailability(baseFloorAvailability);
                     return;
                 }
 
-                const start = new Date(parts[0]);
-                const end = new Date(parts[1]);
+                const start = fecha.parse(parts[0], 'MMM D, YYYY');
+                const end = fecha.parse(parts[1], 'MMM D, YYYY');
 
-                document.getElementById('check_in').value = fecha.format(start, 'YYYY-MM-DD');
-                document.getElementById('check_out').value = fecha.format(end, 'YYYY-MM-DD');
+                if (!start || !end) return;
+
+                // --- DEFINE VARIABLES HERE ---
+                const checkInStr = fecha.format(start, 'YYYY-MM-DD');
+                const checkOutStr = fecha.format(end, 'YYYY-MM-DD');
+
+                // Assign to hidden inputs
+                document.getElementById('check_in').value = checkInStr;
+                document.getElementById('check_out').value = checkOutStr;
 
                 const msPerDay = 1000 * 60 * 60 * 24;
-                selectedNights = Math.round((end - start) / msPerDay);
+                selectedNights = Math.round((end.getTime() - start.getTime()) / msPerDay);
                 document.getElementById('input-nights').value = selectedNights;
 
                 const badge = document.getElementById('nights-badge');
@@ -1009,11 +1479,14 @@
 
                 syncBookingToHiddenFields();
                 recalcTotal();
+
+                // Pass defined variables
+                updateFloorAvailability(checkInStr, checkOutStr);
             }
         });
 
         // initialize from old values if present
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             setGuestMode('new');
 
             const oldCheckIn = document.getElementById('check_in').value;
@@ -1044,6 +1517,9 @@
                 document.getElementById('nights-label').textContent =
                     selectedNights + ' night' + (selectedNights !== 1 ? 's' : '');
                 document.getElementById('nights-badge').classList.remove('hidden');
+                updateFloorAvailability(oldCheckIn, oldCheckOut);
+            } else {
+                applyFloorAvailability(baseFloorAvailability);
             }
 
             syncBookingToHiddenFields();
@@ -1052,7 +1528,9 @@
 
         // option row selection
         document.querySelectorAll('.option-row').forEach(row => {
-            row.addEventListener('click', function () {
+            row.addEventListener('click', function() {
+                if (this.dataset.group === 'floor_level' && this.dataset.available !== 'true') return;
+
                 const group = this.dataset.group;
                 const price = parseInt(this.dataset.price) || 0;
 
@@ -1115,7 +1593,7 @@
             syncBookingToHiddenFields();
         }
 
-        document.getElementById('pax_count').addEventListener('change', function () {
+        document.getElementById('pax_count').addEventListener('change', function() {
             let val = parseInt(this.value) || 1;
             const max = parseInt(this.max) || 10;
             val = Math.min(max, Math.max(1, val));
@@ -1148,7 +1626,10 @@
 
             if (!input) return;
             input.value = '';
-            if (preview) { preview.src = ''; preview.classList.add('hidden'); }
+            if (preview) {
+                preview.src = '';
+                preview.classList.add('hidden');
+            }
             if (previewPdf) previewPdf.classList.add('hidden');
             if (name) name.textContent = '';
             if (previewWrap) {
@@ -1196,17 +1677,22 @@
                 if (preview) {
                     preview.classList.remove('hidden');
                     const reader = new FileReader();
-                    reader.onload = function (e) { preview.src = e.target.result; };
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                    };
                     reader.readAsDataURL(file);
                 }
             } else {
                 // PDF
-                if (preview) { preview.src = ''; preview.classList.add('hidden'); }
+                if (preview) {
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                }
                 if (previewPdf) previewPdf.classList.remove('hidden');
             }
         }
 
-        document.getElementById('booking-wizard-form').addEventListener('submit', function (e) {
+        document.getElementById('booking-wizard-form').addEventListener('submit', function(e) {
             if (isFinalSubmitting) {
                 e.preventDefault();
                 return;
@@ -1232,7 +1718,8 @@
         @endif
     </script>
 
-@include('components.common.unsaved-changes')
+    @include('components.common.unsaved-changes')
 
 </body>
+
 </html>
