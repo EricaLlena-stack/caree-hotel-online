@@ -42,8 +42,8 @@ Follow these steps to set up the system:
 1. **Clone the repository**
 
     ```sh
-    git clone https://github.com/DJmistMAGO/chms.git
-    cd chms
+    git clone https://github.com/EricaLlena-stack/caree-hotel-online.git
+    cd caree-hotel-online
     ```
 
 2. **Install PHP dependencies**
@@ -102,7 +102,7 @@ Now you can access the application at `http://localhost:8000`.
 
 If you are using Laragon, follow these steps:
 
-1. Place the cloned `chms` folder inside your Laragon `www` directory (e.g., `C:\laragon\www\chms`).
+1. Place the cloned `chms` folder inside your Laragon `www` directory (e.g., `C:\laragon\www\caree-hotel-online`).
 2. Start Laragon and ensure Apache/Nginx and MySQL are running.
 3. Open a terminal in the project directory and run:
 
@@ -116,7 +116,7 @@ If you are using Laragon, follow these steps:
     php artisan storage:link
     ```
 
-4. Visit your project in the browser at `http://chms.test.com` (or the domain Laragon assigns).
+4. Visit your project in the browser at `http://caree-hotel-online.test.com` (or the domain Laragon assigns).
 
 
 5. Run the following commands simultaneously in your terminal to run the system:
